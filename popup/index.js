@@ -141,6 +141,44 @@ window.document.getElementById('testButton6').onclick = async () => {
     }
 };
 
+// async function fetchRecommendationAsync() {
+//     const userIdent = await getUserIdentAsync();
+//     const url = "http://161.35.7.92/video_recommendation/users/" + userIdent;
+
+//     /** @type {Response} */
+//     const response = await fetch(url, {
+//         headers: {
+//             'Content-Type': 'application/json'
+//         }
+//     });
+
+//     if (response) {
+//         if (response.ok) return await response.json();
+//         else throw response.status;
+//     }
+//     else {
+//         throw new Error('There were not response.');
+//     }
+// }
+
+/** @type {HTMLButtonElement} */
+const tb7 = window.document.getElementById('testButton7');
+tb7.onclick = async () => {
+    tb7.disabled = true;
+
+    // const recs = await fetchRecommendationAsync().catch(error => {
+    //     if (typeof error === "number")
+    //         console.error('Failed with response code: ' + error);
+    //     else
+    //         console.error(error);
+    // });
+
+    // console.log(recs);
+    await browser.tabs.create({ url: '../recommendationsPage/index.html' });
+
+    tb7.disabled = false;
+}
+
 /* window.document.getElementById('legacyButton').onclick = () => {
     chrome.tabs.create({
         'url': '../content/index.html'
