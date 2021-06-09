@@ -1,15 +1,19 @@
-import getUserIdentAsync from '../common/user.mjs';
+import { getUserIdentAsync, makeHistoryPostAsync } from '../common/user.mjs'
+
+/* global browser */
+
+browser.tabs.create({ url: '../recommendationsPage/index.html' })
 
 window.document.getElementById('testButton3').onclick = async () => {
-    const objResults = await browser.history.search({
-        'text': 'https://www.youtube.com/watch?v=',
-        'startTime': 0,
-        'maxResults': 1000000
-    });
+  const objResults = await browser.history.search({
+    text: 'https://www.youtube.com/watch?v=',
+    startTime: 0,
+    maxResults: 1000000
+  })
 
-    console.log(objResults);
-    window.document.getElementById('testPre3').innerHTML = JSON.stringify(objResults, null, 2);
-};
+  console.log(objResults)
+  window.document.getElementById('testPre3').innerHTML = JSON.stringify(objResults, null, 2)
+}
 
 /* Reminder: browser history search returns this:
 [
@@ -23,123 +27,78 @@ window.document.getElementById('testButton3').onclick = async () => {
 ]
  */
 
-/**
- * @param {Array} objResults
- * @returns {Array}
- */
-function convertHistorySearchResultsToReeeFormat(objResults) {
-    var objVideos = [];
-
-    for (var objResult of objResults) {
-        if (objResult.url.indexOf('https://www.youtube.com/watch?v=') !== 0) {
-            continue;
-
-        } else if ((objResult.title === undefined) || (objResult.title === null)) {
-            continue;
-
-        }
-
-        if (objResult.title.indexOf(' - YouTube') === objResult.title.length - 10) {
-            objResult.title = objResult.title.slice(0, -10)
-        }
-
-        objVideos.push({
-            'strIdent': objResult.url.substr(32, 11),
-            'intTimestamp': objResult.lastVisitTime,
-            'strTitle': objResult.title,
-            'intCount': objResult.visitCount
-        });
-    }
-
-    return objVideos;
-}
-
-/** @returns {Object} */
-async function makeHistoryPostAsync() {
-    const userIdent = await getUserIdentAsync();
-
-    const objResults = await browser.history.search({
-        'text': 'https://www.youtube.com/watch?v=',
-        'startTime': 0,
-        'maxResults': 1000000
-    });
-    const userHistory = convertHistorySearchResultsToReeeFormat(objResults);
-
-    return { userIdent, userHistory };
-}
-
 window.document.getElementById('testButton4').onclick = async () => {
-/*     const userIdent = await getUserIdentAsync();
+  /*     const userIdent = await getUserIdentAsync();
 
-    const objResults = await browser.history.search({
-        'text': 'https://www.youtube.com/watch?v=',
-        'startTime': 0,
-        'maxResults': 1000000
-    });
-    const userHistory = convertHistorySearchResultsToReeeFormat(objResults);
+      const objResults = await browser.history.search({
+          'text': 'https://www.youtube.com/watch?v=',
+          'startTime': 0,
+          'maxResults': 1000000
+      });
+      const userHistory = convertHistorySearchResultsToReeeFormat(objResults);
 
-    const data = { userIdent, userHistory }; */
+      const data = { userIdent, userHistory }; */
 
-    const data = await makeHistoryPostAsync();
-    console.log(data);
-    window.document.getElementById('testPre4').innerHTML = JSON.stringify(data, null, 2);
-};
+  const data = await makeHistoryPostAsync()
+  console.log(data)
+  window.document.getElementById('testPre4').innerHTML = JSON.stringify(data, null, 2)
+}
 
 window.document.getElementById('testButton5').onclick = async () => {
-    const data = await makeHistoryPostAsync();
-    console.log(data);
+  const data = await makeHistoryPostAsync()
+  console.log(data)
 
-    // let message = JSON.stringify(data);
+  // let message = JSON.stringify(data);
 
-    /** @type {HTMLParagraphElement} */
-    const testP5 = window.document.getElementById('testP5');
-    testP5.textContent = 'sending...';
+  /** @type {HTMLParagraphElement} */
+  const testP5 = window.document.getElementById('testP5')
+  testP5.textContent = 'sending...'
 
-    // let request = new XMLHttpRequest();
-/*     request.onload = () => { testP5.textContent = 'success' };
-    request.onabort = () => { testP5.textContent = 'abort' };
-    request.onerror = () => { testP5.textContent = 'error' };
-    request.ontimeout = () => { testP5.textContent = 'timeout' };
+  // let request = new XMLHttpRequest();
+  /*     request.onload = () => { testP5.textContent = 'success' };
+      request.onabort = () => { testP5.textContent = 'abort' };
+      request.onerror = () => { testP5.textContent = 'error' };
+      request.ontimeout = () => { testP5.textContent = 'timeout' };
 
-    request.open("POST", "http://161.35.7.92/video_recommendation/users", true);
-    request.send(message); */
+      request.open("POST", "http://161.35.7.92/video_recommendation/users", true);
+      request.send(message); */
 
-    /** @type {Response} */
-    const response = await fetch("http://161.35.7.92/video_recommendation/users", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: JSON.stringify(data)
-    }).catch(error => testP5.textContent = error);
+  /** @type {Response} */
+  const response = await window.fetch('http://161.35.7.92/video_recommendation/users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: JSON.stringify(data)
+  }).catch(error => testP5.textContent = error)
 
-    if (response) {
-        if (response.ok) testP5.textContent = JSON.stringify(await response.json());
-        else testP5.textContent = 'failed: ' + response.status;
-    }
-};
+  if (response) {
+    if (response.ok) testP5.textContent = JSON.stringify(await response.json())
+    else testP5.textContent = 'failed: ' + response.status
+  }
+}
 
 window.document.getElementById('testButton6').onclick = async () => {
-    /** @type {HTMLParagraphElement} */
-    const testPre6 = window.document.getElementById('testPre6');
-    testPre6.textContent = 'fetching...';
+  /** @type {HTMLParagraphElement} */
+  const testPre6 = window.document.getElementById('testPre6')
+  testPre6.textContent = 'fetching...'
 
-    const userIdent = await getUserIdentAsync();
-    const url = "http://161.35.7.92/video_recommendation/users/" + userIdent;
+  const userIdent = await getUserIdentAsync()
+  const url = 'http://161.35.7.92/video_recommendation/users/' + userIdent
 
-    /** @type {Response} */
-    const response = await fetch(url, {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).catch(error => testPre6.textContent = error);
-
-    if (response) {
-        if (response.ok) testPre6.textContent = JSON.stringify(await response.json(), null, 2);
-        else testPre6.textContent = 'failed: ' + response.status;
+  /** @type {Response} */
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json'
     }
-};
+  }).catch(error => testPre6.textContent = error)
+
+  if (response) {
+    if (response.ok) testPre6.textContent = JSON.stringify(await response.json(), null, 2)
+    else testPre6.textContent = 'failed: ' + response.status
+  }
+}
 
 // async function fetchRecommendationAsync() {
 //     const userIdent = await getUserIdentAsync();
@@ -162,21 +121,21 @@ window.document.getElementById('testButton6').onclick = async () => {
 // }
 
 /** @type {HTMLButtonElement} */
-const tb7 = window.document.getElementById('testButton7');
+const tb7 = window.document.getElementById('testButton7')
 tb7.onclick = async () => {
-    tb7.disabled = true;
+  tb7.disabled = true
 
-    // const recs = await fetchRecommendationAsync().catch(error => {
-    //     if (typeof error === "number")
-    //         console.error('Failed with response code: ' + error);
-    //     else
-    //         console.error(error);
-    // });
+  // const recs = await fetchRecommendationAsync().catch(error => {
+  //     if (typeof error === "number")
+  //         console.error('Failed with response code: ' + error);
+  //     else
+  //         console.error(error);
+  // });
 
-    // console.log(recs);
-    await browser.tabs.create({ url: '../recommendationsPage/index.html' });
+  // console.log(recs);
+  await browser.tabs.create({ url: '../recommendationsPage/index.html' })
 
-    tb7.disabled = false;
+  tb7.disabled = false
 }
 
 /* window.document.getElementById('legacyButton').onclick = () => {

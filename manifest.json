@@ -24,7 +24,13 @@
 		"default_title": "REEE",
 		"default_icon": {
 			"72" : "common/icon.png"
-		},
-		"default_popup": "popup/index.html"
-	}
+		}
+	},
+
+	"background": {
+    "scripts": [
+			"common/browser-polyfill.min.js",
+			"background.js"
+		]
+  }
 }
