@@ -1,7 +1,3 @@
-/**
- * @typedef {Object} GetResponseJson
- * @property {string[]} video_strIndents
- */
 export default class RecommendationsView {
   /** @param {HTMLElement} section */
   constructor (section) {

@@ -2,7 +2,12 @@ import { getUserIdentAsync, makeHistoryPostAsync } from '../common/user.mjs'
 import RecommendationsView from './RecommendationsView.mjs'
 import { StatusType, StatusView } from './StatusView.mjs'
 
-/** @returns {Promise<Response> | Promise<null>} */
+/**
+ * @typedef {Object} GetResponseJson
+ * @property {string[]} video_strIndents
+ */
+
+/** @returns {Promise<Response | null>} */
 async function fetchRecommendationsAsync () {
   const userIdent = await getUserIdentAsync()
   const url = 'http://161.35.7.92/video_recommendation/users/' + userIdent
@@ -32,8 +37,6 @@ function fetchAndShowRecommendationsAsync (statusView, recommendationsView) {
     return strIdents.filter(strIdent => re.test(strIdent))
   }
 
-  // 'the user is not registered in the system'
-  // 'video_list'
   /** @param {Promise<GetResponseJson>} jsonPromise */
   async function showRecsOrStatusAsync (jsonPromise) {
     const json = await jsonPromise
@@ -83,51 +86,40 @@ fetchAndShowRecommendationsAsync(statusView, recommendationsView)
 // Upload history and get recommendations on button press.
 refreshButton.onclick = async () => {
   refreshButton.disabled = true
+  console.group('Refresh button has been clicked.')
 
-  const data = await makeHistoryPostAsync()
+  try {
+    const data = await makeHistoryPostAsync()
+    console.log('Got history data:', data)
 
-  if (data.userHistory.length === 0) {
-    statusView.showStatus(StatusType.EmptyHistory)
+    if (data.userHistory.length === 0) {
+      statusView.showStatus(StatusType.EmptyHistory)
+      console.log('History is empty, showing empty history status.')
+      return
+    }
+
+    /** @type {Response} */
+    const response = await window.fetch('http://161.35.7.92/video_recommendation/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).catch(console.error)
+
+    if (response) {
+      if (!response.ok) console.error(response)
+    } else {
+      console.error('no response')
+    }
+
+    console.log('History data sent, getting fresh recommendations')
+    fetchAndShowRecommendationsAsync(statusView, recommendationsView)
+    // .finally(() => { refreshButton.disabled = false })
+  } finally {
+    console.groupEnd()
     refreshButton.disabled = false
-    return
   }
-
-  /** @type {Response} */
-  const response = await window.fetch('http://161.35.7.92/video_recommendation/users', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  }).catch(console.error)
-
-  if (response) {
-    if (!response.ok) console.error(response)
-  } else {
-    console.error('no response')
-  }
-
-  fetchAndShowRecommendationsAsync(statusView, recommendationsView)
-    .finally(() => { refreshButton.disabled = false })
 }
 
 refreshButton.onkeypress = refreshButton.onclick
-
-// // NOTE: Firefox (maybe Chrome too) extensions are not allowed to download and execute code.
-// // ("extensions with 'unsafe-eval', 'unsafe-inline', remote script, blob, or remote sources in their CSP are not allowed for extensions listed on addons.mozilla.org due to major security issues.")
-// // Thus, we can't use the main official way to inline YT videos.
-// // But there's an additional official way, so let's try it instead.
-
-// /** @type {string[]} */
-// const strIdents = filterValidStrIdents(recs.video_strIndents)
-// strIdents.forEach(strIdent => {
-//   /** @type {HTMLIFrameElement} */
-//   const iframeForYT = window.document.createElement('iframe')
-//   iframeForYT.id = 'player'
-//   iframeForYT.type = 'text/html'
-//   iframeForYT.width = 640
-//   iframeForYT.height = 390
-//   iframeForYT.src = `http://www.youtube.com/embed/${strIdent}?color=white&rel=0`
-
-//   section.appendChild(iframeForYT)
-// })

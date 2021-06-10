@@ -1,3 +1,4 @@
+// @ts-check
 /* global browser */
 
 // From here: https://stackoverflow.com/a/23854032/776442
@@ -57,16 +58,22 @@ function convertHistorySearchResultsToReeeFormat (objResults) {
   return objVideos
 }
 
-/** @returns {Object} */
+/** @returns {Promise<Object>} */
 export async function makeHistoryPostAsync () {
+  console.group(makeHistoryPostAsync.name + '() has been called.')
+
   const userIdent = await getUserIdentAsync()
+  console.log('User Identificator is: ' + userIdent)
 
   const objResults = await browser.history.search({
     text: 'https://www.youtube.com/watch?v=',
-    startTime: 0,
-    maxResults: 1000000
+    startTime: 0
   })
-  const userHistory = convertHistorySearchResultsToReeeFormat(objResults)
+  console.log(`Found ${objResults.length} YT video pages in browser history.`)
 
+  const userHistory = convertHistorySearchResultsToReeeFormat(objResults)
+  console.log(`Converted ${userHistory.length} YT video page entries (from browser history).`)
+
+  console.groupEnd()
   return { userIdent, userHistory }
 }
