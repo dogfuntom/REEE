@@ -75,7 +75,7 @@ const statusView = new StatusView(
   window.document.getElementById('otherError'),
   window.document.getElementById('otherErrorContent')
 )
-const recommendationsView = new RecommendationsView(window.document.getElementById('section'))
+const recommendationsView = new RecommendationsView(window.document.getElementById('container'))
 
 const refreshButton = window.document.getElementById('refresh')
 

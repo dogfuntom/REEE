@@ -8,23 +8,43 @@ export default class RecommendationsView {
 
   /** @param {string[]} recommendations */
   changeRecommendations (recommendations) {
+    function makeContainer () {
+      const aside = window.document.createElement('aside')
+      return aside
+    }
+
+    function makeAnchor (strIdent) {
+      /** @type {HTMLAnchorElement} */
+      const a = window.document.createElement('a')
+      a.href = 'https://youtu.be/' + strIdent
+      a.target = '_blank'
+      // a.textContent = a.href
+      return a
+    }
+
+    function makeImg (strIdent) {
+      /** @type {HTMLImageElement} */
+      const img = window.document.createElement('img')
+      img.alt = 'thumbnail for Youtube video with id =' + strIdent
+      img.src = `http://i3.ytimg.com/vi/${strIdent}/hqdefault.jpg`
+      return img
+    }
+
     for (const elem of this.recommendations) {
       elem.remove()
     }
     this.recommendations = []
 
     for (const strIdent of recommendations) {
-      const li = window.document.createElement('li')
+      const container = // window.document.createElement('li')
+        makeContainer()
+      const a = makeAnchor(strIdent)
+      const img = makeImg(strIdent)
 
-      /** @type {HTMLAnchorElement} */
-      const a = window.document.createElement('a')
-      a.href = 'https://youtu.be/' + strIdent
-      a.target = '_blank'
-      a.textContent = a.href
-
-      li.appendChild(a)
-      this.section.appendChild(li)
-      this.recommendations.push(li)
+      a.appendChild(img)
+      container.appendChild(a)
+      this.section.appendChild(container)
+      this.recommendations.push(container)
     }
   }
 }
