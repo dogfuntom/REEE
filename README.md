@@ -3,11 +3,8 @@ REEE
 
 REcommendation Engine Extension
 
-Legal
+How to install
 ---
 
-TODO: Don't forget to add (license and copyright) notices for our 3rd-parties:
-
-- MIT: MVP.css
-- MPL: WebExtension browser API Polyfill
-- Must we include notices for server 3rd-parties too?
+The extension is not in Firefox's or Chrome's extension store yet.
+It's still possible to try it using `about:debugging#/runtime/this-firefox` or it's Chrome's equivalent.
