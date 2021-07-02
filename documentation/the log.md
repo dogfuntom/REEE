@@ -6,7 +6,7 @@ Most important content should be categorized properly eventually.
 The rest should be kept here, just in case.
 Most recent is at the top.
 
-Removed the Content folder
+Removed all the Youtube Watchmarker code
 ---
 
 (Together with jquery mentioned below.)
@@ -16,9 +16,7 @@ Removed the Content folder
 - It won't be used in release version without heavy changes.
 - It's always available at <https://github.com/sniklaus/youtube-watchmarker> for our inspiration.
 
-Thus, there's no point in commiting it to git.
-
-Also, removed youtube.js, youtube.css and background.js for the same reason (not used, not modified).
+Thus, there's no point in commiting it to git or being bound by its license.
 
 jquery.js
 ---
