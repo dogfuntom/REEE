@@ -1,6 +1,8 @@
-# REEE
+# REcommendation Engine Extension
 
-REcommendation engine extension.
+Get video recommendations based on your Youtube video viewing history, independently from Youtube's own recommendation algorithm. No censorship, no „engagement boosting“ tricks, no „demonetization“.
+
+Below is default content left from this page's template.
 
 ## Welcome to GitHub Pages
 
