@@ -1,42 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
 
-  <title>Recommendations - REEE</title>
+    <title>Recommendations — REEE</title>
 
-  <link rel="stylesheet" href="../common/mvp.css">
+    <link rel="stylesheet" href="../common/mvp.css">
+    <link rel="icon" href="../common/icon.png" type="image/png">
+  </head>
 
-  <link rel="icon" href="../common/icon.png" type="image/png">
-</head>
+  <body>
+    <main>
+      <section>
+        <header>
+          <h2>Youtube video recommendations</h2>
+        </header>
 
-<body>
-  <!-- <header>
-    <h1>REEE — REcommendation Engine Extension</h1>
-  </header> -->
-  <main>
-    <section>
-      <header>
-        <h2>Youtube video recommendations</h2>
-      </header>
+        <button id="refresh" disabled autocomplete="off">Refresh</button>
+        <br>
+        <p id="loading">Loading...</p>
+        <p id="noUser" hidden>There are no recommendations yet. Please click the <strong>refresh</strong> button.</p>
+        <p id="emptyHistory" hidden>It seems like you have no Youtube videos in browser history. Please visit some of your favorite Youtube videos before using REEE.</p>
+        <p id="otherError" hidden>Can't connect to REEE server: <samp id="otherErrorContent"></samp>.</p>
+      </section>
+      <section id="container">
+      </section>
+    </main>
 
-      <button id="refresh" disabled autocomplete="off">Refresh</button>
+    <footer>
+      <hr>
+      <a href="https://github.com/dogfuntom/REEE">REEE — REcommendation Engine Extension</a>
       <br>
-      <p id="loading">Loading...</p>
-      <p id="noUser" hidden>There are no recommendations yet. Please click the <strong>refresh</strong> button.</p>
-      <p id="emptyHistory" hidden>It seems like you have no Youtube videos in browser history. Please visit some of your favorite Youtube videos before using REEE.</p>
-      <p id="otherError" hidden>Can't connect to REEE server: <samp id="otherErrorContent"></samp>.</p>
-    </section>
-    <section id="container">
-    </section>
-  </main>
+      <a href="./license-3rd-party.html">3rd-party licenses</a>
+    </footer>
 
-  <footer>
-    <hr>
-    <p>REEE — REcommendation Engine Extension</p>
-  </footer>
-
-  <script src="index.js" type="module"></script>
-</body>
+    <script src="index.js" type="module"></script>
+  </body>
 </html>
