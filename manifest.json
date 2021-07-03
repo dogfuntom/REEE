@@ -15,6 +15,7 @@
 
 	"browser_specific_settings": {
 		"gecko": {
+			"id": "www@reee.uk",
 			"strict_min_version": "52.0"
 		}
 	},

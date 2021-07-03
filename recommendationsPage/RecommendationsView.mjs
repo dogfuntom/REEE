@@ -18,15 +18,17 @@ export default class RecommendationsView {
       const a = window.document.createElement('a')
       a.href = 'https://youtu.be/' + strIdent
       a.target = '_blank'
-      // a.textContent = a.href
       return a
     }
 
+    /**
+     * @param {string} strIdent
+     */
     function makeImg (strIdent) {
       /** @type {HTMLImageElement} */
-      const img = window.document.createElement('img')
-      img.alt = 'thumbnail for Youtube video with id =' + strIdent
-      img.src = `http://i3.ytimg.com/vi/${strIdent}/hqdefault.jpg`
+      const img = new Image()
+      img.alt = 'thumbnail for Youtube video with id =' + String(strIdent)
+      img.src = 'http://i3.ytimg.com/vi/' + String(strIdent) + '/hqdefault.jpg'
       return img
     }
 
