@@ -1,29 +1,25 @@
 import { closeSelfAsync } from './privacyConsent.mjs'
 /* global browser */
 
-// async function closeSelfAsync () {
-//   try {
-//     const windowId = (await browser.windows.getCurrent()).id
-//     await browser.windows.remove(windowId)
-//     // this point will never be reached, since the window is gone
-//     //
-//   } catch (error) { console.error('Closing failed:', error) }
-// }
+async function switchToDeniedAsync () {
+  await browser.windows.create({ url: './denied.html', type: 'popup', height: 500, width: 600 })
+  closeSelfAsync()
+}
+
+window.addEventListener('beforeunload', switchToDeniedAsync)
 
 /** @type {HTMLButtonElement} */
 const yes = window.document.getElementById('yes')
-yes.onclick = async () => {
+yes.onclick = () => {
   browser.tabs.create({ url: '../recommendationsPage/index.html' })
-  await closeSelfAsync()
+  window.removeEventListener('beforeunload', switchToDeniedAsync)
+  closeSelfAsync()
 }
 yes.onkeydown = yes.onclick
 
 /** @type {HTMLButtonElement} */
 const no = window.document.getElementById('no')
-no.onclick = async () => {
-  browser.windows.create({ url: './denied.html', type: 'popup', height: 600, width: 600 })
-  await closeSelfAsync()
+no.onkeydown = no.onclick = () => {
+  no.disabled = true
+  switchToDeniedAsync()
 }
-no.onkeydown = no.onclick
-
-yes.focus()
