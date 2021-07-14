@@ -6,7 +6,7 @@ Most important content should be categorized properly eventually.
 The rest should be kept here, just in case.
 Most recent is at the top.
 
-Learned about `.msj` file (lack of) support
+Renamed all `.msj` files to `.js`
 ---
 
 It turns out `@ts-check` doesn't work with `.mjs` files
@@ -14,13 +14,13 @@ It turns out `@ts-check` doesn't work with `.mjs` files
 
 Without it, IntelliSense won't work too (again, more accurately, it will kinda barely work).
 
-Thus, it's best to try renaming all the `.mjs` to `.js` and see how helpful this change is.
+See also: <https://github.com/Microsoft/TypeScript/issues/27957>.
 
-Learned about `Window.close()`
+Tried `window.close()` instead of `browser.windows` API
 ---
 
-It's not important right now but it would be nice to try it.
-It seems that it can be used to avoid boilerplate around getting self id.
+Using the former leads to „leave page“ confirmation dialog,
+which is a completely useless dialog in this case.
 
 Removed all the Youtube Watchmarker code
 ---

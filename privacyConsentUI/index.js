@@ -1,9 +1,9 @@
-import { closeSelfAsync } from './privacyConsent.mjs'
+import { closeSelfAsync } from './privacyConsent.js'
 /* global browser */
 
 async function switchToDeniedAsync () {
   await browser.windows.create({ url: './denied.html', type: 'popup', height: 500, width: 600 })
-  closeSelfAsync()
+  await closeSelfAsync()
 }
 
 window.addEventListener('beforeunload', switchToDeniedAsync)
@@ -21,5 +21,6 @@ yes.onkeydown = yes.onclick
 const no = window.document.getElementById('no')
 no.onkeydown = no.onclick = () => {
   no.disabled = true
-  switchToDeniedAsync()
+  // The event will handle opening the deny confirmation popup.
+  closeSelfAsync()
 }

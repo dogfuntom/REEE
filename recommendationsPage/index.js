@@ -1,9 +1,9 @@
 // @ts-ignore
-import { getUserIdentAsync, makeHistoryPostAsync } from '../common/user.mjs'
+import { getUserIdentAsync, makeHistoryPostAsync } from '../common/user.js'
 // @ts-ignore
-import RecommendationsView from './RecommendationsView.mjs'
+import RecommendationsView from './RecommendationsView.js'
 // @ts-ignore
-import { StatusType, StatusView } from './StatusView.mjs'
+import { StatusType, StatusView } from './StatusView.js'
 import authAsync from '../common/auth.js'
 import FetchError, { WrapperFetchError } from '../common/fetchError.js'
 

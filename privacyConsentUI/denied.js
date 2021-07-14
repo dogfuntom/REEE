@@ -1,4 +1,4 @@
-import { closeSelfAsync } from './privacyConsent.mjs'
+import { closeSelfAsync } from './privacyConsent.js'
 /* global browser */
 
 function uninstallSelf () {
