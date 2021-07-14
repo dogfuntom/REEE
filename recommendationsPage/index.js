@@ -1,25 +1,43 @@
+// @ts-ignore
 import { getUserIdentAsync, makeHistoryPostAsync } from '../common/user.mjs'
+// @ts-ignore
 import RecommendationsView from './RecommendationsView.mjs'
+// @ts-ignore
 import { StatusType, StatusView } from './StatusView.mjs'
+import authAsync from '../common/auth.js'
+import FetchError, { WrapperFetchError } from '../common/fetchError.js'
 
 /**
  * @typedef {Object} GetResponseJson
  * @property {string[]} video_strIndents
  */
 
-/** @returns {Promise<Response | null>} */
-async function fetchRecommendationsAsync () {
-  const userIdent = await getUserIdentAsync()
-  const url = 'http://161.35.7.92/video_recommendation/users/' + userIdent
+const baseUrl = 'https://reee.uk/'
 
-  /** @type {Response} */
-  const response = await window.fetch(url, {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
+/**
+ * @param {string} token
+ * @param {string | URL} base
+ * @returns {Promise<Response>}
+ * @throws {FetchError}
+ */
+async function fetchRecommendationsAsync (token, base) {
+  try {
+    const userIdent = await getUserIdentAsync()
+    // const url = 'https://161.35.7.92/video_recommendation/users/' + userIdent
+    const url = new URL(`./video_recommendation/users/${userIdent}/${token}`, base)
 
-  return response ?? null
+    const response = await window.fetch(url.href, {
+      // headers: {
+      //   'Content-Type': 'application/json'
+      // }
+    })
+
+    console.log(response)
+
+    return response
+  } catch (err) {
+    throw WrapperFetchError.toFetchError(err)
+  }
 }
 
 /**
@@ -28,7 +46,7 @@ async function fetchRecommendationsAsync () {
  * @param {RecommendationsView} recommendationsView
  * @returns {Promise}
  */
-function fetchAndShowRecommendationsAsync (statusView, recommendationsView) {
+async function fetchAndShowRecommendationsAsync (statusView, recommendationsView) {
   /**
    * @param {string[]} strIdents
    * @returns {string[]} */
@@ -40,6 +58,7 @@ function fetchAndShowRecommendationsAsync (statusView, recommendationsView) {
   /** @param {Promise<GetResponseJson>} jsonPromise */
   async function showRecsOrStatusAsync (jsonPromise) {
     const json = await jsonPromise
+    // @ts-ignore
     if (json.msg === 'the user is not registered in the system' || !json.video_strIndents || json.video_strIndents.length === 0) {
       statusView.showStatus(StatusType.NoUser)
     } else {
@@ -49,23 +68,18 @@ function fetchAndShowRecommendationsAsync (statusView, recommendationsView) {
     }
   }
 
-  return fetchRecommendationsAsync()
-    .then(
-      /** @param {Response} response */
-      response => {
-        if (response.ok) {
-          return showRecsOrStatusAsync(response.json())
-        } else {
-          let errorText = response.statusText
-          if (!errorText || errorText.length === 0) {
-            errorText = response.status
-          }
-          statusView.showOtherError(errorText)
-        }
-      })
-    .catch(error => {
-      statusView.showOtherError(error)
-    })
+  const token = await authAsync(baseUrl)
+  const response = await fetchRecommendationsAsync(token, baseUrl)
+  /** @param {Response} response */
+  if (response.ok) {
+    return showRecsOrStatusAsync(response.json())
+  } else {
+    let errorText = response.statusText
+    if (!errorText || errorText.length === 0) {
+      errorText = response.status.toString()
+    }
+    statusView.showOtherError(errorText)
+  }
 }
 
 const statusView = new StatusView(
@@ -77,10 +91,12 @@ const statusView = new StatusView(
 )
 const recommendationsView = new RecommendationsView(window.document.getElementById('container'))
 
+/** @type {HTMLButtonElement} */ // @ts-ignore
 const refreshButton = window.document.getElementById('refresh')
 
 // Get the recommendations asap.
 fetchAndShowRecommendationsAsync(statusView, recommendationsView)
+  .catch(e => statusView.showOtherError(e))
   .finally(() => { refreshButton.disabled = false })
 
 // Upload history and get recommendations on button press.
@@ -98,28 +114,26 @@ refreshButton.onclick = async () => {
       return
     }
 
-    /** @type {Response} */
-    const response = await window.fetch('http://161.35.7.92/video_recommendation/users', {
+    const token = await authAsync(baseUrl)
+    const urlWithoutToken = new URL('./video_recommendation/users/', baseUrl)
+    const urlWithToken = new URL('./' + token, urlWithoutToken)
+    const response = await window.fetch(urlWithToken.href, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
-    }).catch(console.error)
+    })
 
-    if (response) {
-      if (!response.ok) console.error(response)
-    } else {
-      console.error('no response')
-    }
+    if (!response.ok) console.error(response)
 
     console.log('History data sent, getting fresh recommendations')
     fetchAndShowRecommendationsAsync(statusView, recommendationsView)
-    // .finally(() => { refreshButton.disabled = false })
   } finally {
     console.groupEnd()
     refreshButton.disabled = false
   }
 }
 
+// @ts-ignore
 refreshButton.onkeypress = refreshButton.onclick

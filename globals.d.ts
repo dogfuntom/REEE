@@ -1,7 +1,5 @@
-// interface Window {
-//   webkitNotifications: any;
-// }
+declare var browser: any
 
-// declare var CAN_NOTIFY: number;
-
-declare var browser: any;
+interface ErrorConstructor {
+  captureStackTrace: any | undefined;
+}

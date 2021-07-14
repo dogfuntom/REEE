@@ -1,8 +1,9 @@
 /* global browser */
 
 browser.runtime.onInstalled.addListener(async ({ reason, temporary }) => {
-  // Do not skip in order to test this.
-  // if (temporary) return; // skip during development
+  // Comment or uncomment, depending on what is tested atm.
+  if (temporary) return // skip during development
+
   switch (reason) {
     case 'install':
       {

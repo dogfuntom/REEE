@@ -1,4 +1,3 @@
-// @ts-check
 /* global browser */
 
 // From here: https://stackoverflow.com/a/23854032/776442
