@@ -1,5 +1,6 @@
 /* global browser */
 
+/** @deprecated */
 export async function closeSelfAsync () {
   try {
     const windowId = await getSelfIdAsync()
@@ -8,6 +9,7 @@ export async function closeSelfAsync () {
   } catch (error) { console.error('Closing failed:', error) }
 }
 
+/** @deprecated */
 async function getSelfIdAsync () {
   return (await browser.windows.getCurrent()).id
 }

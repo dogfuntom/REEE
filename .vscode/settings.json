@@ -3,6 +3,5 @@
     "standard.validate": [
 
         "javascript",
-        "javascriptreact",
     ]
 }

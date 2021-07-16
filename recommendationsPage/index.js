@@ -6,6 +6,7 @@ import RecommendationsView from './RecommendationsView.js'
 import { StatusType, StatusView } from './StatusView.js'
 import authAsync from '../common/auth.js'
 import FetchError, { WrapperFetchError } from '../common/fetchError.js'
+import ensureConsentIsAskedAsync from '../privacyConsent/privacyConsent.js'
 
 /**
  * @typedef {Object} GetResponseJson
@@ -105,6 +106,8 @@ refreshButton.onclick = async () => {
   console.group('Refresh button has been clicked.')
 
   try {
+    if (!await ensureConsentIsAskedAsync()) return
+
     const data = await makeHistoryPostAsync()
     console.log('Got history data:', data)
 
