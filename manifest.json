@@ -3,27 +3,27 @@
 
 	"name": "REEE",
 	"description": "REcommendation Engine Extension",
-	"homepage_url": "https://github.com/dogfuntom/REEE",
+	"homepage_url": "http://reee.uk/",
 
-	"version": "0.1.1",
+	"version": "1.0.0",
 
 	"permissions": ["history", "storage"],
 
 	"icons": {
-		"72": "common/icon.png"
+		"34": "common/icon.png"
 	},
 
 	"browser_specific_settings": {
 		"gecko": {
-			"id": "www@reee.uk",
-			"strict_min_version": "52.0"
+			"id": "info@reee.uk",
+			"strict_min_version": "77.0"
 		}
 	},
 
 	"browser_action": {
 		"default_title": "REEE",
 		"default_icon": {
-			"72" : "common/icon.png"
+			"34" : "common/icon.png"
 		}
 	},
 
