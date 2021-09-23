@@ -1,3 +1,6 @@
 # Public auth tokens. Not a big secret, but just in case.
 common/authTokens.mjs
 common/authTokens.js
+
+# Build output.
+_build/

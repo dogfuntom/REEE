@@ -3,5 +3,17 @@
     "standard.validate": [
 
         "javascript",
-    ]
+    ],
+    "deno.enable": true,
+    "deno.lint": true,
+    "deno.unstable": false,
+    "deno.suggest.imports.hosts": {
+        "https://esm.sh": false,
+        "https://unpkg.com": false
+    },
+    "cSpell.words": [
+        "Reee",
+        "reinit"
+    ],
+    "firefox.profile": "MetaMask_Test"
 }

@@ -1,10 +1,8 @@
-// @ts-ignore
 import { getUserIdentAsync, makeHistoryPostAsync } from '../common/user.js'
-// @ts-ignore
 import RecommendationsView from './RecommendationsView.js'
-// @ts-ignore
 import { StatusType, StatusView } from './StatusView.js'
 import authAsync from '../common/auth.js'
+// deno-lint-ignore no-unused-vars
 import FetchError, { WrapperFetchError } from '../common/fetchError.js'
 import ensureConsentIsAskedAsync from '../privacyConsent/privacyConsent.js'
 
@@ -138,5 +136,4 @@ refreshButton.onclick = async () => {
   }
 }
 
-// @ts-ignore
 refreshButton.onkeypress = refreshButton.onclick

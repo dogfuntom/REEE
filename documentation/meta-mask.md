@@ -55,6 +55,6 @@ And if they are equal then it's best to prefer the latest "stable" (relatively) 
 
 ## Conclusion
 
-- Extension Provider is useless is a library because it's outdated. Still can be used as if it's a pseudo-code example.
+- Extension Provider is a mostly useless middle-man. It should be used carefully or just as a sample code (i.e. copy-paste its code, not use it as a library).
 - As hinted in the documentation, convenience libraries are not needed. It's probably best to use `request()` provided by the unwrapped provider directly.
 - Sign examples still can be as if they are pseudo-code examples.

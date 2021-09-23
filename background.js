@@ -1,15 +1,12 @@
 /* global browser */
 
-browser.runtime.onInstalled.addListener(async ({ reason, temporary }) => {
+// deno-lint-ignore no-unused-vars
+browser.runtime.onInstalled.addListener(({ reason, temporary }) => {
   // Comment or uncomment, depending on what is tested atm.
   // if (temporary) return // skip during development
 
   switch (reason) {
     case 'install':
-      // {
-      //   const url = browser.runtime.getURL('privacyConsent/UI/index.html')
-      //   await browser.windows.create({ url, type: 'popup', height: 600, width: 1024 })
-      // }
       break
   }
 })
