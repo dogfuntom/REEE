@@ -1,77 +1,79 @@
-import BackendFake from './BackendFake.js'
-import { MetaMaskFacade, kovanChainId } from './metamask.js'
+import { MetaMaskFacade } from './metamask.js'
+import { } from './metamaskLogin.js'
+import PrototypeButton from './metaMaskPrototypeCore.js'
 
-// For now, just test here.
-/** @type {HTMLButtonElement} */
-const button = document.getElementById('kovan')
-if (button instanceof HTMLButtonElement) {
-  button.onclick = async () => {
-    try {
-      button.disabled = true
-      await login(kovanChainId)
-    } finally {
-      button.disabled = false
-    }
+{
+  const binanceButton = new PrototypeButton(document.getElementById('binance'))
+  binanceButton.onclick = async () => {
+    const rpcUrls = [
+      "https://bsc-dataseed1.binance.org",
+      "https://bsc-dataseed2.binance.org",
+      "https://bsc-dataseed3.binance.org",
+      "https://bsc-dataseed4.binance.org",
+      "https://bsc-dataseed1.defibit.io",
+      "https://bsc-dataseed2.defibit.io",
+      "https://bsc-dataseed3.defibit.io",
+      "https://bsc-dataseed4.defibit.io",
+      "https://bsc-dataseed1.ninicoin.io",
+      "https://bsc-dataseed2.ninicoin.io",
+      "https://bsc-dataseed3.ninicoin.io",
+      "https://bsc-dataseed4.ninicoin.io",
+      "wss://bsc-ws-node.nariox.org"
+    ]
+    await addNetworkAsync(56, 'Binance Smart Chain Mainnet', 'BNB', rpcUrls, 'https://bscscan.com')
+    return 'done'
   }
 }
 
-async function login (chainId) {
+{
+  const binanceTestButton = new PrototypeButton(document.getElementById('binanceTest'))
+  binanceTestButton.onclick = async () => {
+    const rpcUrls = [
+      "https://data-seed-prebsc-1-s1.binance.org:8545",
+      "https://data-seed-prebsc-2-s1.binance.org:8545",
+      "https://data-seed-prebsc-1-s2.binance.org:8545",
+      "https://data-seed-prebsc-2-s2.binance.org:8545",
+      "https://data-seed-prebsc-1-s3.binance.org:8545",
+      "https://data-seed-prebsc-2-s3.binance.org:8545"
+    ]
+    await addNetworkAsync(97, 'Binance Smart Chain Testnet', 'tBNB', rpcUrls, 'https://testnet.bscscan.com')
+    return 'done'
+  }
+}
+
+{
+  const trackReeeButton = new PrototypeButton(document.getElementById('token'))
+  trackReeeButton.onclick = async () => {
+    await watchReeeAssetAsync()
+  }
+}
+
+async function addNetworkAsync (chainId, chainName, currencySymbol, rpcUrls, blockExplorerUrl) {
   const mmf = new MetaMaskFacade(error => {
     if (error && error.includes('lost connection')) {
-      renderText('MetaMask extension not detected.')
+      throw 'MetaMask extension not detected.'
     }
     else {
-      renderText(error)
+      throw error
     }
   })
 
-  try {
-    await mmf.initialize()
-    await fakeLogin(mmf, chainId)
-    renderText('successful login')
-  } catch (err) {
-    renderError(err)
-    throw err
-  }
+  await mmf.initializeAsync()
+  await mmf.addChainAsync(chainId, chainName, 'Binance Chain Native Token', currencySymbol, 18, rpcUrls, blockExplorerUrl)
 }
 
-function renderError (msg) {
-  if ((msg.message !== undefined) && (msg.code !== undefined)) {
-    // MetaMask error.
-    renderText (`${msg.code}: ${msg.message}`)
-  } else {
-    renderText (String(msg))
-  }
-}
+async function watchReeeAssetAsync () {
+  const mmf = new MetaMaskFacade(error => {
+    if (error && error.includes('lost connection')) {
+      throw 'MetaMask extension not detected.'
+    }
+    else {
+      throw error
+    }
+  })
 
-function renderText (text) {
-  button.innerText = text
-}
-
-const backend = new BackendFake()
-
-/**
- * @param {MetaMaskFacade} mmf
- * @param {number} chainId
- * @returns {Promise<boolean>}
- */
-async function fakeLogin (mmf, chainId) {
-  const publicAddress = mmf.account
-  const eth = mmf.provider
-
-  const nonce = backend.getOrCreateNonce(publicAddress)
-  console.info(eth)
-
-  const signature = await mmf.sign(nonce, chainId)
-  console.log(signature)
-
-  if (backend.verify(nonce, publicAddress, signature)) {
-    // renderText('successful login')
-    return
-  } else {
-    // renderText('login failed')
-    throw 'verification failed'
-  }
+  await mmf.initializeAsync()
+  await mmf.watchAssetAsync('0xb802e1d6bd40c1976d11d0cd462c04122ba33672', 'REEE', 18)
 }
 
 /**

@@ -41,7 +41,7 @@ export class MetaMaskFacade {
    * Requests MetaMask account.
    * According to guidelines should be used only on button press or similar user action.
    */
-  async initialize() {
+  async initializeAsync() {
     const provider = this.provider
 
     console.log('provider detected', provider)
@@ -73,7 +73,7 @@ export class MetaMaskFacade {
    * @param {string} [chainId=1]
    */
   // Mostly a copy from here: https://docs.metamask.io/guide/signing-data.html (scroll to bottom then click JavaScript tab).
-  async sign(nonce, chainId) {
+  async signAsync(nonce, chainId) {
     const from = this.account
     const provider = this.provider
     chainId = chainId ?? '1'
@@ -118,5 +118,64 @@ export class MetaMaskFacade {
     var method = 'eth_signTypedData_v4';
     const signature = await provider.request({method, params})
     return signature
+  }
+
+  async addChainAsync (chainId, chainName, currencyName, currencySymbol, currencyDecimals, rpcUrls, blockExplorerUrl) {
+    const toHex = (num) => {
+      return '0x'+num.toString(16)
+    }
+    const ethereum = this.provider
+
+    try {
+      await ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: toHex(chainId) }],
+      });
+    } catch (switchError) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      if (switchError.code === 4902) {
+        try {
+          const params = {
+            chainId: toHex(chainId),
+            chainName: chainName,
+            nativeCurrency: {
+              name: currencyName,
+              symbol: currencySymbol, // 2-6 characters long
+              decimals: currencyDecimals,
+            },
+            rpcUrls: rpcUrls,
+            blockExplorerUrls: [ blockExplorerUrl ]
+          }
+          await ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [params, this.account],
+          });
+        } catch (addError) {
+          // handle "add" error
+          throw addError
+        }
+      }
+      // handle other "switch" errors
+      throw switchError
+    }
+  }
+
+  async watchAssetAsync (address, symbol, decimals) {
+    const success = await this.provider .request({
+      method: 'wallet_watchAsset',
+      params: {
+        type: 'ERC20',
+        options: {
+          address,
+          symbol,
+          decimals,
+          // image,
+        },
+      },
+    })
+
+    if (!success) {
+      throw new Error('Something went wrong.')
+    }
   }
 }
