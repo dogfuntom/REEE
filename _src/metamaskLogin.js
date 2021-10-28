@@ -1,20 +1,42 @@
-import BackendFake from './BackendFake.js'
-import { MetaMaskFacade, kovanChainId } from './metamask.js'
+import Backend from './BackendReal.js'
+import { MetaMaskFacade, kovanChainId, binanceTestnetChainId } from './metamask.js'
+import { getUserIdentAsync } from '../common/user.js'
 
-/** @type {HTMLButtonElement} */
-const kovanButton = document.getElementById('kovan')
-if (kovanButton instanceof HTMLButtonElement) {
-  kovanButton.onclick = async () => {
-    try {
-      kovanButton.disabled = true
-      await login(kovanChainId)
-    } finally {
-      kovanButton.disabled = false
+// const backendUrl = 'https://reee-blockchain-k9uqc.ondigitalocean.app/'
+const backendUrl = 'http://localhost:3000'
+
+{
+  const kovanButton = document.getElementById('kovan')
+  if (kovanButton instanceof HTMLButtonElement) {
+    kovanButton.onclick = async () => {
+      try {
+        kovanButton.disabled = true
+        await loginAsync(kovanChainId, txt => kovanButton.innerText = txt)
+      } finally {
+        kovanButton.disabled = false
+      }
+    }
+  }
+
+  const binanceTestButton = document.getElementById('binanceTestSign')
+  if (binanceTestButton instanceof HTMLButtonElement) {
+    binanceTestButton.onclick = async () => {
+      try {
+        binanceTestButton.disabled = true
+        await loginAsync(binanceTestnetChainId, txt => binanceTestButton.innerText = txt)
+      } finally {
+        binanceTestButton.disabled = false
+      }
     }
   }
 }
 
-async function login (chainId) {
+/**
+ *
+ * @param {string} chainId
+ * @param {function} renderText
+ */
+async function loginAsync (chainId, renderText) {
   const mmf = new MetaMaskFacade(error => {
     if (error && error.includes('lost connection')) {
       renderText('MetaMask extension not detected.')
@@ -26,15 +48,15 @@ async function login (chainId) {
 
   try {
     await mmf.initializeAsync()
-    await fakeLogin(mmf, chainId)
+    await loginImplAsync(await getUserIdentAsync(), mmf, chainId)
     renderText('successful login')
   } catch (err) {
-    renderError(err)
+    renderError(err, renderText)
     throw err
   }
 }
 
-function renderError (msg) {
+function renderError (msg, renderText) {
   if ((msg.message !== undefined) && (msg.code !== undefined)) {
     // MetaMask error.
     renderText (`${msg.code}: ${msg.message}`)
@@ -43,31 +65,27 @@ function renderError (msg) {
   }
 }
 
-function renderText (text) {
-  kovanButton.innerText = text
-}
-
-const backend = new BackendFake()
+const backend = new Backend(backendUrl)
 
 /**
+ * @param {string} userIdent
  * @param {MetaMaskFacade} mmf
- * @param {number} chainId
+ * @param {string} chainId
  * @returns {Promise<boolean>}
  */
-async function fakeLogin (mmf, chainId) {
+async function loginImplAsync (userIdent, mmf, chainId) {
   const publicAddress = mmf.account
-  const eth = mmf.provider
 
-  const nonce = backend.getOrCreateNonce(publicAddress)
-  console.info(eth)
+  const nonce = await backend.getOrCreateNonce(userIdent)
+  const signature = await mmf.signAsync(userIdent, nonce, chainId)
 
-  const signature = await mmf.signAsync(nonce, chainId)
-  console.log(signature)
-
-  if (backend.verify(nonce, publicAddress, signature)) {
+  console.log(`Preparing to verify... (Data is: ${
+    JSON.stringify({publicAddress, nonce, chainId, signature})
+  }.)`)
+  if (await backend.verify(userIdent, publicAddress, signature)) {
     return
   } else {
-    throw 'verification failed'
+    throw 'verification failed for unknown reason'
   }
 }
 

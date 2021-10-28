@@ -2,6 +2,7 @@
 // We can insert its code right here directly with minor modifications.
 // And thus decrement the count of dependencies.
 import createMetaMaskProvider from 'https://esm.sh/metamask-extension-provider'
+import toMsgParams from './ethSignTypedDataV4.js'
 
 /**
  * @typedef {Object} MetaMaskProvider
@@ -15,6 +16,8 @@ import createMetaMaskProvider from 'https://esm.sh/metamask-extension-provider'
  */
 
 export const kovanChainId = '42'
+export const binanceMainnetChainId = '56'
+export const binanceTestnetChainId = '97'
 
 /**
  * Wrapper for MetaMask-related or ethereum-related APIs
@@ -69,50 +72,16 @@ export class MetaMaskFacade {
 
   /**
    * Signs a message. Atm of writing this doc it uses eth_signTypedData_v4 (not fully decided yet).
+   * @param {string} userIdent our user ID
    * @param {string} nonce our nonce
-   * @param {string} [chainId=1]
+   * @param {string} [chainId=56]
    */
-  // Mostly a copy from here: https://docs.metamask.io/guide/signing-data.html (scroll to bottom then click JavaScript tab).
-  async signAsync(nonce, chainId) {
+  async signAsync(userIdent, nonce, chainId) {
     const from = this.account
     const provider = this.provider
-    chainId = chainId ?? '1'
+    chainId = chainId ?? '56'
 
-    const msgParams = JSON.stringify({
-      domain: {
-        // Defining the chain aka Rinkeby testnet or Ethereum Main Net
-        chainId: chainId,
-        // Give a user friendly name to the specific contract you are signing for.
-        name: 'REEE',
-        // If name isn't enough add verifying contract to make sure you are establishing contracts with the proper entity
-        verifyingContract: 'https://reee.uk',
-        // Just let's you know the latest version. Definitely make sure the field name is correct.
-        version: '1',
-      },
-
-      // Defining the message signing data content.
-      message: {
-        // Not gonna include userIdent until we know we want it included.
-        //reeeUserIdent: userIdent,
-        reeeUserNonce: nonce,
-      },
-      // Refers to the keys of the *types* object below.
-      primaryType: 'ReeeAuth',
-      types: {
-        // TODO: Clarify if EIP712Domain refers to the domain the contract is hosted on
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
-        // Refer to PrimaryType
-        ReeeAuth: [
-          //{ name: 'reeeUserIdent', type: 'string' },
-          { name: 'reeeUserNonce', type: 'string' },
-        ],
-      },
-    });
+    const msgParams = JSON.stringify(toMsgParams(userIdent, nonce, chainId))
 
     var params = [from, msgParams];
     var method = 'eth_signTypedData_v4';
