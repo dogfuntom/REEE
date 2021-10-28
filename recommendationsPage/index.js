@@ -13,7 +13,7 @@ import ensureConsentIsAskedAsync from '../privacyConsent/privacyConsent.js'
  * @property {string[]} video_strIndents
  */
 
-const baseUrl = 'https://reee.uk/'
+const baseUrl = 'https://api.reee.uk/'
 
 /**
  * @param {string} token
@@ -131,7 +131,7 @@ refreshButton.onclick = async () => {
     if (!response.ok) console.error(response)
 
     console.log('History data sent, getting fresh recommendations')
-    fetchAndShowRecommendationsAsync(statusView, recommendationsView)
+    await fetchAndShowRecommendationsAsync(statusView, recommendationsView)
   } finally {
     console.groupEnd()
     refreshButton.disabled = false
