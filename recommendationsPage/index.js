@@ -11,7 +11,7 @@ import ensureConsentIsAskedAsync from '../privacyConsent/privacyConsent.js'
  * @property {string[]} video_strIndents
  */
 
-const baseUrl = 'https://reee.uk/'
+const baseUrl = 'https://api.reee.uk/'
 
 /**
  * @param {string} token
