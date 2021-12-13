@@ -1,9 +1,10 @@
 import Backend from './BackendReal.js'
-import { MetaMaskFacade, kovanChainId, binanceTestnetChainId } from './metamask.js'
+import { MetaMaskFacade, binanceMainnetChainId as chainId } from './metamask.js'
 import { getUserIdentAsync } from '../common/user.js'
 
-// const backendUrl = 'https://reee-blockchain-k9uqc.ondigitalocean.app/'
-const backendUrl = 'http://localhost:3000'
+// NOTE: don't forget to run build when changing this.
+const backendUrl = 'https://reee-blockchain-k9uqc.ondigitalocean.app/'
+// const backendUrl = 'http://localhost:3000'
 
 {
   const kovanButton = document.getElementById('kovan')
@@ -11,7 +12,7 @@ const backendUrl = 'http://localhost:3000'
     kovanButton.onclick = async () => {
       try {
         kovanButton.disabled = true
-        await loginAsync(kovanChainId, txt => kovanButton.innerText = txt)
+        await loginAsync(chainId, txt => kovanButton.innerText = txt)
       } finally {
         kovanButton.disabled = false
       }
@@ -23,7 +24,7 @@ const backendUrl = 'http://localhost:3000'
     binanceTestButton.onclick = async () => {
       try {
         binanceTestButton.disabled = true
-        await loginAsync(binanceTestnetChainId, txt => binanceTestButton.innerText = txt)
+        await loginAsync(chainId, txt => binanceTestButton.innerText = txt)
       } finally {
         binanceTestButton.disabled = false
       }

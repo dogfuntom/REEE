@@ -22,7 +22,6 @@ const baseUrl = 'https://api.reee.uk/'
 async function fetchRecommendationsAsync (token, base) {
   try {
     const userIdent = await getUserIdentAsync()
-    // const url = 'https://161.35.7.92/video_recommendation/users/' + userIdent
     const url = new URL(`./video_recommendation/users/${userIdent}/${token}`, base)
 
     const response = await window.fetch(url.href, {
@@ -129,7 +128,7 @@ refreshButton.onclick = async () => {
     if (!response.ok) console.error(response)
 
     console.log('History data sent, getting fresh recommendations')
-    fetchAndShowRecommendationsAsync(statusView, recommendationsView)
+    await fetchAndShowRecommendationsAsync(statusView, recommendationsView)
   } finally {
     console.groupEnd()
     refreshButton.disabled = false
