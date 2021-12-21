@@ -2,16 +2,25 @@
   // See https://go.microsoft.com/fwlink/?LinkId=733558
   // for the documentation about the tasks.json format
   "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "deno bundle",
+  "tasks": [ {
+      "label": "tsify (do not use because there's no TS yet)",
+      "type": "shell",
+      "group": "build",
+      "options": {
+        "cwd": "./_node"
+      },
+      "command": "browserify main.ts -p [ tsify --noImplicitAny ] > ../_build/bundle.js"
+    }, {
+      "label": "browserify (use this)",
       "type": "shell",
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "command": "deno bundle _src/metamaskPrototype.js _build/metamask.bundle.js",
-      "problemMatcher": []
+      "options": {
+        "cwd": "./_node"
+      },
+      "command": "browserify main.mjs -p esmify --debug > ../_build/bundle.js"
     }
   ]
 }

@@ -1,8 +1,13 @@
 // Note that dependency is very very simple.
 // We can insert its code right here directly with minor modifications.
 // And thus decrement the count of dependencies.
-import createMetaMaskProvider from 'https://esm.sh/metamask-extension-provider'
-import toMsgParams from './ethSignTypedDataV4.js'
+
+// import createMetaMaskProvider from 'https://esm.sh/metamask-extension-provider'
+// import createMetaMaskProvider from 'https://cdn.skypack.dev/metamask-extension-provider';
+// todo: this dependency is rotten (it depends on deprecated versions of its dependencies), just use it as an inspiration/know-how instead of a direct dependency
+import createMetaMaskProvider from 'metamask-extension-provider'
+
+import toMsgParams from './ethSignTypedDataV4.mjs'
 
 /**
  * @typedef {Object} MetaMaskProvider
@@ -83,8 +88,8 @@ export class MetaMaskFacade {
 
     const msgParams = JSON.stringify(toMsgParams(userIdent, nonce, chainId))
 
-    var params = [from, msgParams];
-    var method = 'eth_signTypedData_v4';
+    const params = [from, msgParams];
+    const method = 'eth_signTypedData_v4';
     const signature = await provider.request({method, params})
     return signature
   }

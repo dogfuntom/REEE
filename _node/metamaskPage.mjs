@@ -1,9 +1,9 @@
-import { MetaMaskFacade } from './metamask.js'
-import { } from './metamaskLogin.js'
-import PrototypeButton from './metaMaskPrototypeCore.js'
+import { MetaMaskFacade } from './metamask.mjs'
+import { } from './metamaskLogin.mjs'
+import PrototypeButton from './PrototypeButton.mjs'
 
 {
-  const binanceButton = new PrototypeButton(document.getElementById('binance'))
+  const binanceButton = new PrototypeButton(/** @type {HTMLButtonElement} */ (document.getElementById('binance')))
   binanceButton.onclick = async () => {
     const rpcUrls = [
       "https://bsc-dataseed1.binance.org",
@@ -26,7 +26,7 @@ import PrototypeButton from './metaMaskPrototypeCore.js'
 }
 
 {
-  const binanceTestButton = new PrototypeButton(document.getElementById('binanceTest'))
+  const binanceTestButton = new PrototypeButton(/** @type {HTMLButtonElement} */ (document.getElementById('binanceTest')))
   binanceTestButton.onclick = async () => {
     const rpcUrls = [
       "https://data-seed-prebsc-1-s1.binance.org:8545",
@@ -42,7 +42,7 @@ import PrototypeButton from './metaMaskPrototypeCore.js'
 }
 
 {
-  const trackReeeButton = new PrototypeButton(document.getElementById('token'))
+  const trackReeeButton = new PrototypeButton(/** @type {HTMLButtonElement} */ (document.getElementById('token')))
   trackReeeButton.onclick = async () => {
     await watchReeeAssetAsync()
   }

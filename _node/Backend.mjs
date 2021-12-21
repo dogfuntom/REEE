@@ -12,7 +12,7 @@ export default class Backend {
 
   async getOrCreateNonce (userIdent) {
     const url = new URL(`${this.usersUrl.pathname}/${userIdent}`, this.usersUrl)
-    const response = await window.fetch(url.href)
+    const response = await fetch(url.href)
 
     if (!response.ok) {
       throw new Error(`Server responded with error code: ${response.status}`)
@@ -22,7 +22,7 @@ export default class Backend {
   }
 
   async verify (userIdent, publicAddress, signature) {
-    const response = await window.fetch(
+    const response = await fetch(
       new URL(`${this.usersUrl.pathname}/${userIdent}/${publicAddress}/${signature}`, this.usersUrl).href,
       { method: 'put' })
 

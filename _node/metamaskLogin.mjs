@@ -1,5 +1,5 @@
-import Backend from './BackendReal.js'
-import { MetaMaskFacade, binanceMainnetChainId as chainId } from './metamask.js'
+import Backend from './Backend.mjs'
+import { MetaMaskFacade, binanceMainnetChainId as chainId } from './metamask.mjs'
 import { getUserIdentAsync } from '../common/user.js'
 
 // NOTE: don't forget to run build when changing this.

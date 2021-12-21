@@ -2,13 +2,13 @@ import { getUserIdentAsync, makeHistoryPostAsync } from '../common/user.js'
 import RecommendationsView from './RecommendationsView.js'
 import { StatusType, StatusView } from './StatusView.js'
 import authAsync from '../common/auth.js'
-// deno-lint-ignore no-unused-vars
-import FetchError, { WrapperFetchError } from '../common/fetchError.js'
+import { WrapperFetchError } from '../common/fetchError.js'
 import ensureConsentIsAskedAsync from '../privacyConsent/privacyConsent.js'
 
 /**
  * @typedef {Object} GetResponseJson
  * @property {string[]} video_strIndents
+ * @property {string | undefined} msg
  */
 
 const baseUrl = 'https://api.reee.uk/'
@@ -24,7 +24,7 @@ async function fetchRecommendationsAsync (token, base) {
     const userIdent = await getUserIdentAsync()
     const url = new URL(`./video_recommendation/users/${userIdent}/${token}`, base)
 
-    const response = await window.fetch(url.href, {
+    const response = await fetch(url.href, {
       // headers: {
       //   'Content-Type': 'application/json'
       // }
@@ -56,7 +56,6 @@ async function fetchAndShowRecommendationsAsync (statusView, recommendationsView
   /** @param {Promise<GetResponseJson>} jsonPromise */
   async function showRecsOrStatusAsync (jsonPromise) {
     const json = await jsonPromise
-    // @ts-ignore
     if (json.msg === 'the user is not registered in the system' || !json.video_strIndents || json.video_strIndents.length === 0) {
       statusView.showStatus(StatusType.NoUser)
     } else {
@@ -89,16 +88,17 @@ const statusView = new StatusView(
 )
 const recommendationsView = new RecommendationsView(window.document.getElementById('container'))
 
-/** @type {HTMLButtonElement} */ // @ts-ignore
-const refreshButton = window.document.getElementById('refresh')
+const refreshButton = /** @type {HTMLButtonElement} */ (window.document.getElementById('refresh'))
 
 // Get the recommendations asap.
 fetchAndShowRecommendationsAsync(statusView, recommendationsView)
   .catch(e => statusView.showOtherError(e))
   .finally(() => { refreshButton.disabled = false })
 
-// Upload history and get recommendations on button press.
-refreshButton.onclick = async () => {
+/**
+ * @param {MouseEvent | KeyboardEvent} _ev
+ */
+async function onclick (_ev) {
   refreshButton.disabled = true
   console.group('Refresh button has been clicked.')
 
@@ -117,7 +117,7 @@ refreshButton.onclick = async () => {
     const token = await authAsync(baseUrl)
     const urlWithoutToken = new URL('./video_recommendation/users/', baseUrl)
     const urlWithToken = new URL('./' + token, urlWithoutToken)
-    const response = await window.fetch(urlWithToken.href, {
+    const response = await fetch(urlWithToken.href, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -135,4 +135,5 @@ refreshButton.onclick = async () => {
   }
 }
 
-refreshButton.onkeypress = refreshButton.onclick
+refreshButton.onclick = onclick
+refreshButton.onkeydown = onclick

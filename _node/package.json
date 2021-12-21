@@ -1,0 +1,19 @@
+{
+  "name": "reee",
+  "version": "1.0.0",
+  "description": "the compiled part of REEE's code (the rest of code is published and executed as is)",
+  "main": "main.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "REEE",
+  "license": "UNLICENSED",
+  "private": "true",
+  "dependencies": {
+    "metamask-extension-provider": "^3.0.0"
+  },
+  "devDependencies": {
+    "browser-resolve": "^2.0.0",
+    "esmify": "^2.1.1"
+  }
+}
