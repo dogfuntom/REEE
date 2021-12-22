@@ -2,10 +2,7 @@
 // We can insert its code right here directly with minor modifications.
 // And thus decrement the count of dependencies.
 
-// import createMetaMaskProvider from 'https://esm.sh/metamask-extension-provider'
-// import createMetaMaskProvider from 'https://cdn.skypack.dev/metamask-extension-provider';
-// todo: this dependency is rotten (it depends on deprecated versions of its dependencies), just use it as an inspiration/know-how instead of a direct dependency
-import createMetaMaskProvider from 'metamask-extension-provider'
+import { createExternalExtensionProvider as createMetaMaskProvider } from '@metamask/providers';
 
 import toMsgParams from './ethSignTypedDataV4.mjs'
 
@@ -56,7 +53,7 @@ export class MetaMaskFacade {
 
     const eth = provider
 
-    if (!eth.isMetaMask) {
+    if (!eth['isMetaMask']) {
       console.log('Non-MetaMask wallet. Only MetaMask is supported currently.')
       return
     }
