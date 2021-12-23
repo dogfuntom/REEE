@@ -31,7 +31,7 @@ export class MetaMaskFacade {
    * (Not sure if it limits how early it can be used or if it may produce error.)
    * @param {ErrorHandler} [errorHandler]
    */
-  constructor (errorHandler) {
+  constructor(errorHandler) {
     this.provider = createMetaMaskProvider()
 
     if (!this.provider) {
@@ -48,17 +48,7 @@ export class MetaMaskFacade {
    */
   async initializeAsync() {
     const provider = this.provider
-
-    console.log('provider detected', provider)
-
     const eth = provider
-
-    if (!eth['isMetaMask']) {
-      console.log('Non-MetaMask wallet. Only MetaMask is supported currently.')
-      return
-    }
-
-    console.log('MetaMask provider detected.')
 
     const accounts = await eth.request({ method: 'eth_requestAccounts' })
     const account = accounts[0]
@@ -73,7 +63,7 @@ export class MetaMaskFacade {
   }
 
   /**
-   * Signs a message. Atm of writing this doc it uses eth_signTypedData_v4 (not fully decided yet).
+   * Signs a message.
    * @param {string} userIdent our user ID
    * @param {string} nonce our nonce
    * @param {string} [chainId=56]
@@ -87,13 +77,13 @@ export class MetaMaskFacade {
 
     const params = [from, msgParams];
     const method = 'eth_signTypedData_v4';
-    const signature = await provider.request({method, params})
+    const signature = await provider.request({ method, params })
     return signature
   }
 
-  async addChainAsync (chainId, chainName, currencyName, currencySymbol, currencyDecimals, rpcUrls, blockExplorerUrl) {
+  async addChainAsync(chainId, chainName, currencyName, currencySymbol, currencyDecimals, rpcUrls, blockExplorerUrl) {
     const toHex = (num) => {
-      return '0x'+num.toString(16)
+      return '0x' + num.toString(16)
     }
     const ethereum = this.provider
 
@@ -115,7 +105,7 @@ export class MetaMaskFacade {
               decimals: currencyDecimals,
             },
             rpcUrls: rpcUrls,
-            blockExplorerUrls: [ blockExplorerUrl ]
+            blockExplorerUrls: [blockExplorerUrl]
           }
           await ethereum.request({
             method: 'wallet_addEthereumChain',
@@ -125,14 +115,15 @@ export class MetaMaskFacade {
           // handle "add" error
           throw addError
         }
+      } else {
+        // handle other "switch" errors
+        throw switchError
       }
-      // handle other "switch" errors
-      throw switchError
     }
   }
 
-  async watchAssetAsync (address, symbol, decimals) {
-    const success = await this.provider .request({
+  async watchAssetAsync(address, symbol, decimals) {
+    const success = await this.provider.request({
       method: 'wallet_watchAsset',
       params: {
         type: 'ERC20',

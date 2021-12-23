@@ -3,7 +3,7 @@ common/authTokens.mjs
 common/authTokens.js
 
 # Build output.
-_build/
+_node/bundle.js
 
 ## ==== NODE.js ====
 # Source: https://github.com/github/gitignore/blob/main/Node.gitignore

@@ -1,6 +1,10 @@
 /**
- * A sketch of facade (client?) of our real backend.
- * (It's status is a sketch because the real backend itself is on prototype stage.)
+ * A facade that wraps the REST API of our blockchain-related backend.
+ * @module
+ */
+
+/**
+ * A facade that wraps the REST API of our blockchain-related backend.
  */
 export default class Backend {
   /**

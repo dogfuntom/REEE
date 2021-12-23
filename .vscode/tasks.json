@@ -9,7 +9,7 @@
       "options": {
         "cwd": "./_node"
       },
-      "command": "browserify main.ts -p [ tsify --noImplicitAny ] > ../_build/bundle.js"
+      "command": "browserify main.ts -p [ tsify --noImplicitAny ] > bundle.js"
     }, {
       "label": "browserify (use this)",
       "type": "shell",
@@ -20,7 +20,7 @@
       "options": {
         "cwd": "./_node"
       },
-      "command": "browserify main.mjs -p esmify --debug > ../_build/bundle.js"
+      "command": "browserify main.mjs -p esmify --debug > bundle.js"
     }
   ]
 }

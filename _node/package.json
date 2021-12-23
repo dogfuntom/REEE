@@ -12,11 +12,14 @@
   "dependencies": {
     "@metamask/providers": "^8.1.1",
     "detect-browser": "^5.3.0",
-    "extension-port-stream": "^2.0.1",
-    "metamask-extension-provider": "^3.0.0"
+    "extension-port-stream": "^2.0.1"
   },
   "devDependencies": {
     "browser-resolve": "^2.0.0",
     "esmify": "^2.1.1"
+  },
+  "overrides": {
+    "webextension-polyfill-ts": "npm:@types/webextension-polyfill",
+    "core-js": "^3.3"
   }
 }
