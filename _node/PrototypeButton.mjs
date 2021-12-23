@@ -25,7 +25,11 @@ export default class PrototypeButton {
         const result = await handler()
         this.button.innerText = String(result ?? this.initialText)
       } catch (error) {
-        this.button.innerText = String(error)
+        if (error instanceof Error){
+          this.button.innerText = error.toString()
+        } else {
+          this.button.innerText = JSON.stringify(error)
+        }
       } finally {
         this.button.disabled = false;
       }
