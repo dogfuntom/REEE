@@ -73,7 +73,7 @@ async function watchReeeAssetAsync () {
   })
 
   await mmf.initializeAsync()
-  await mmf.watchAssetAsync('0xb802e1d6bd40c1976d11d0cd462c04122ba33672', 'REEE', 18)
+  await mmf.watchAssetAsync('0x41664b1316fceac8578801bd6eb130ef0cfbec69', 'REEE', 18)
 }
 
 /**
