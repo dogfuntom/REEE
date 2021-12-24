@@ -66,16 +66,15 @@ export class MetaMaskFacade {
    * Signs a message.
    * @param {string} userIdent our user ID
    * @param {string} nonce our nonce
-   * @param {string} [chainId=56]
+   * @param {string} chainId
    */
   async signAsync(userIdent, nonce, chainId) {
     const from = this.account
     const provider = this.provider
-    chainId = chainId ?? '56'
 
-    const msgParams = JSON.stringify(toMsgParams(userIdent, nonce, chainId))
+    const msgParams = toMsgParams(userIdent, nonce, chainId)
 
-    const params = [from, msgParams];
+    const params = [from, JSON.stringify(msgParams)];
     const method = 'eth_signTypedData_v4';
     const signature = await provider.request({ method, params })
     return signature
@@ -136,8 +135,15 @@ export class MetaMaskFacade {
       },
     })
 
+    console.debug(success)
     if (!success) {
-      throw new Error('Something went wrong.')
+      console.debug(success)
+      const error = new Error('Either has been already added or something else went wrong.')
+      if ('captureStackFrame' in Error) {
+        Error.captureStackTrace(error)
+        console.debug(error.stack)
+      }
+      throw error
     }
   }
 }

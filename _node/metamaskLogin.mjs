@@ -2,29 +2,17 @@ import Backend from './Backend.mjs'
 import { MetaMaskFacade, binanceMainnetChainId as chainId } from './metamask.mjs'
 import { getUserIdentAsync } from '../common/user.js'
 
-// NOTE: don't forget to run build when changing this.
-const backendUrl = 'https://reee-blockchain-k9uqc.ondigitalocean.app/'
-// const backendUrl = 'http://localhost:3000'
+// @remind Backend URL. Don't forget to run build when changing this.
+// const backendUrl = 'https://reee-blockchain-k9uqc.ondigitalocean.app/'
+const backendUrl = 'http://localhost:3000'
 
 {
-  const kovanButton = document.getElementById('kovan')
-  if (kovanButton instanceof HTMLButtonElement) {
-    kovanButton.onclick = async () => {
-      try {
-        kovanButton.disabled = true
-        await loginAsync(chainId, txt => kovanButton.innerText = txt)
-      } finally {
-        kovanButton.disabled = false
-      }
-    }
-  }
-
-  const binanceTestButton = document.getElementById('binanceTestSign')
+  const binanceTestButton = document.getElementById('binanceSign')
   if (binanceTestButton instanceof HTMLButtonElement) {
     binanceTestButton.onclick = async () => {
       try {
         binanceTestButton.disabled = true
-        await loginAsync(chainId, txt => binanceTestButton.innerText = txt)
+        await loginAsync(chainId, text => binanceTestButton.innerText = text)
       } finally {
         binanceTestButton.disabled = false
       }
@@ -35,7 +23,7 @@ const backendUrl = 'https://reee-blockchain-k9uqc.ondigitalocean.app/'
 /**
  *
  * @param {string} chainId
- * @param {function} renderText
+ * @param {(text: string) => void} renderText
  */
 async function loginAsync (chainId, renderText) {
   const mmf = new MetaMaskFacade(error => {
@@ -49,7 +37,7 @@ async function loginAsync (chainId, renderText) {
 
   try {
     await mmf.initializeAsync()
-    await loginImplAsync(await getUserIdentAsync(), mmf, chainId)
+    await loginImplAsync(await getUserIdentAsync(), mmf, chainId, renderText)
     renderText('successful login')
   } catch (err) {
     renderError(err, renderText)
@@ -62,7 +50,7 @@ function renderError (msg, renderText) {
     // MetaMask error.
     renderText (`${msg.code}: ${msg.message}`)
   } else {
-    renderText (String(msg))
+    renderText (msg.toString())
   }
 }
 
@@ -72,21 +60,30 @@ const backend = new Backend(backendUrl)
  * @param {string} userIdent
  * @param {MetaMaskFacade} mmf
  * @param {string} chainId
+ * @param {(text: string) => void} [ongoingStatusCallback]
  * @returns {Promise<boolean>}
  */
-async function loginImplAsync (userIdent, mmf, chainId) {
+async function loginImplAsync (userIdent, mmf, chainId, ongoingStatusCallback) {
+  if (!ongoingStatusCallback) ongoingStatusCallback = () => {}
+
   const publicAddress = mmf.account
 
   const nonce = await backend.getOrCreateNonce(userIdent)
+  ongoingStatusCallback(nonce)
+
   const signature = await mmf.signAsync(userIdent, nonce, chainId)
 
-  console.log(`Preparing to verify... (Data is: ${
-    JSON.stringify({publicAddress, nonce, chainId, signature})
-  }.)`)
   if (await backend.verify(userIdent, publicAddress, signature)) {
     return
   } else {
-    throw 'verification failed for unknown reason'
+    console.info('Verification failed, the data is: ', {
+      userIdent,
+      chainId,
+      publicAddress,
+      nonce,
+      signature
+    })
+    throw new Error('Verification failed for unknown reason.')
   }
 }
 

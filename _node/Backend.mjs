@@ -35,7 +35,6 @@ export default class Backend {
     }
 
     const text = await response.text()
-    console.log(text)
 
     return text === 'true'
   }

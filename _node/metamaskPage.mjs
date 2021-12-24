@@ -21,23 +21,9 @@ import PrototypeButton from './PrototypeButton.mjs'
       "wss://bsc-ws-node.nariox.org"
     ]
     await addNetworkAsync(56, 'Binance Smart Chain Mainnet', 'BNB', rpcUrls, 'https://bscscan.com')
-    return 'done'
-  }
-}
 
-{
-  const binanceTestButton = new PrototypeButton(/** @type {HTMLButtonElement} */ (document.getElementById('binanceTest')))
-  binanceTestButton.onclick = async () => {
-    const rpcUrls = [
-      "https://data-seed-prebsc-1-s1.binance.org:8545",
-      "https://data-seed-prebsc-2-s1.binance.org:8545",
-      "https://data-seed-prebsc-1-s2.binance.org:8545",
-      "https://data-seed-prebsc-2-s2.binance.org:8545",
-      "https://data-seed-prebsc-1-s3.binance.org:8545",
-      "https://data-seed-prebsc-2-s3.binance.org:8545"
-    ]
-    await addNetworkAsync(97, 'Binance Smart Chain Testnet', 'tBNB', rpcUrls, 'https://testnet.bscscan.com')
-    return 'done'
+    // There's no need to tell 'done', MetaMask's UI already shows clearly that it's done.
+    // return 'done'
   }
 }
 
