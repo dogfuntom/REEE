@@ -14,16 +14,18 @@ function getRandomToken () {
   return hex
 }
 
+const userIdentKey = 'userIdent'
+
 /** @returns {Promise} */
 export async function getUserIdentAsync () {
   if (!browser.storage) throw Error('Permission for using storage is needed.')
 
-  const items = await browser.storage.sync.get('userIdent').catch(console.error)
-  if (items && items.userIdent) {
-    return items.userIdent
+  const items = await browser.storage.sync.get(userIdentKey).catch(console.error)
+  if (items && items[userIdentKey]) {
+    return items[userIdentKey]
   } else {
     const userIdent = getRandomToken()
-    await browser.storage.sync.set({ userIdent: userIdent })
+    await browser.storage.sync.set({ [userIdentKey]: userIdent })
     return userIdent
   }
 }
@@ -62,7 +64,7 @@ export async function makeHistoryPostAsync () {
   console.group(makeHistoryPostAsync.name + '() has been called.')
 
   const userIdent = await getUserIdentAsync()
-  console.log('User Identificator is: ' + userIdent)
+  console.log('User Identifier is: ' + userIdent)
 
   const objResults = await browser.history.search({
     text: 'https://www.youtube.com/watch?v=',

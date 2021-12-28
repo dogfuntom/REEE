@@ -1,22 +1,34 @@
 import Backend from './Backend.mjs'
 import { MetaMaskFacade, binanceMainnetChainId as chainId } from './metamask.mjs'
 import { getUserIdentAsync } from '../common/user.js'
+import browser from 'webextension-polyfill'
 
 // @remind Backend URL. Don't forget to run build when changing this.
-// const backendUrl = 'https://reee-blockchain-k9uqc.ondigitalocean.app/'
-const backendUrl = 'http://localhost:3000'
+const backendUrl = 'https://reee-blockchain-k9uqc.ondigitalocean.app/'
+// const backendUrl = 'http://localhost:3000'
+
+const didSignInKey = 'didSignIn'
 
 {
-  const binanceTestButton = document.getElementById('binanceSign')
-  if (binanceTestButton instanceof HTMLButtonElement) {
-    binanceTestButton.onclick = async () => {
+  const binanceLoginButton = document.getElementById('binanceSign')
+  if (binanceLoginButton instanceof HTMLButtonElement) {
+    binanceLoginButton.onclick = async () => {
       try {
-        binanceTestButton.disabled = true
-        await loginAsync(chainId, text => binanceTestButton.innerText = text)
+        binanceLoginButton.disabled = true
+        await loginAsync(chainId, text => binanceLoginButton.innerText = text)
+
+        // If we get here, then loginAsync() succeeded, because it throws otherwise.
+        flagDidSignInAsync().catch(console.error)
       } finally {
-        binanceTestButton.disabled = false
+        binanceLoginButton.disabled = false
       }
     }
+
+    getDidSignInAsync()
+      .then(flag => {
+        if (flag) binanceLoginButton.textContent = 'Re-' + binanceLoginButton.textContent
+      })
+      .catch(console.error)
   }
 }
 
@@ -87,7 +99,11 @@ async function loginImplAsync (userIdent, mmf, chainId, ongoingStatusCallback) {
   }
 }
 
-/**
- * @typedef {Object} MetaMaskProvider
- * @property {function} on
- */
+export async function getDidSignInAsync () {
+  const didSignIn = await browser.storage.local.get({ [didSignInKey]: false })
+  return didSignIn[didSignInKey]
+}
+
+export async function flagDidSignInAsync () {
+  await browser.storage.local.set({ [didSignInKey]: true })
+}
