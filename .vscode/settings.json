@@ -1,7 +1,13 @@
 {
     "editor.tabSize": 2,
-    "standard.validate": [
-
-        "javascript",
-    ]
+    "cSpell.words": [
+        "Reee",
+        "reinit"
+    ],
+    "firefox.profile": "MetaMask_Test",
+    "files.exclude": {
+        "**/*.js": { "when": "$(basename).ts" },
+        "**/**.js": { "when": "$(basename).tsx" },
+        "_node/bundle.js": true
+    },
 }

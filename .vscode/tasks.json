@@ -1,0 +1,26 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [ {
+      "label": "tsify (do not use because there's no TS yet)",
+      "type": "shell",
+      "group": "build",
+      "options": {
+        "cwd": "./_node"
+      },
+      "command": "browserify main.ts -p [ tsify --noImplicitAny ] > bundle.js"
+    }, {
+      "label": "browserify (use this)",
+      "type": "shell",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "./_node"
+      },
+      "command": "browserify main.mjs -p esmify --debug > bundle.js"
+    }
+  ]
+}

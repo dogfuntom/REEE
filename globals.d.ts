@@ -1,5 +1,13 @@
-declare var browser: any
+declare namespace browser {
+  declare namespace storage {
+    interface StorageArea {
+      get: any,
+      set: any
+    }
 
-interface ErrorConstructor {
-  captureStackTrace: any | undefined;
+    const local: StorageArea,
+    const sync: StorageArea,
+  }
+
 }
+
