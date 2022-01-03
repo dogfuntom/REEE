@@ -21,16 +21,15 @@ const baseUrl = 'https://api.reee.uk/'
  */
 async function fetchRecommendationsAsync (token, base) {
   try {
+    profile(getUserIdentAsync.name)
     const userIdent = await getUserIdentAsync()
     const url = new URL(`./video_recommendation/users/${userIdent}/${token}`, base)
+    profileEnd(getUserIdentAsync.name)
 
-    const response = await fetch(url.href, {
-      // headers: {
-      //   'Content-Type': 'application/json'
-      // }
-    })
-
-    console.log(response)
+    profile(fetch.name)
+    const response = await fetch(url.href)
+    console.debug(response)
+    profileEnd(fetch.name)
 
     return response
   } catch (err) {
@@ -65,11 +64,19 @@ async function fetchAndShowRecommendationsAsync (statusView, recommendationsView
     }
   }
 
+  profile(authAsync.name)
   const token = await authAsync(baseUrl)
+  profileEnd(authAsync.name)
+
+  profile(fetchRecommendationsAsync.name)
   const response = await fetchRecommendationsAsync(token, baseUrl)
+  profileEnd(fetchRecommendationsAsync.name)
+
   /** @param {Response} response */
   if (response.ok) {
+    profile(showRecsOrStatusAsync.name)
     return showRecsOrStatusAsync(response.json())
+      .finally(() => profileEnd(showRecsOrStatusAsync.name))
   } else {
     let errorText = response.statusText
     if (!errorText || errorText.length === 0) {
@@ -137,3 +144,19 @@ async function onclick (_ev) {
 
 refreshButton.onclick = onclick
 refreshButton.onkeydown = onclick
+
+/**
+ * @param {string} label
+ */
+function profile (label) {
+  const c = /** @type {Console | (Console & { profile: (label: string) => void })} */ (console)
+  if ('profile' in c) c.profile(label)
+}
+
+/**
+ * @param {string} label
+ */
+function profileEnd (label) {
+  const c = /** @type {Console | (Console & { profileEnd: (label: string) => void })} */ (console)
+  if ('profileEnd' in c) c.profileEnd(label)
+}
