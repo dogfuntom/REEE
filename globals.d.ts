@@ -1,8 +1,8 @@
 declare namespace browser {
   declare namespace storage {
     interface StorageArea {
-      get: any,
-      set: any
+      get: Promise,
+      set: Promise
     }
 
     const local: StorageArea,

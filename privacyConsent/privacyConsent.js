@@ -9,7 +9,7 @@ if (!browser.windows.onRemoved.hasListener(clearConsentDialogPopupId)) {
 /**
  * If consent was given, returns true.
  * Otherwise, launches the privacy consent dialog, and returns false.
- * (If dialog is already launched, then reuses it.)
+ * (If dialog is already launched, then reuses it, and returns false.)
  * @returns {Promise<boolean>}
  * @throws {Error}
  */
