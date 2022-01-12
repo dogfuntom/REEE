@@ -4,9 +4,23 @@ import YT from './YT.mjs'
 const recommendationsCap = 1000
 const eagerCount = 1
 
+const thumbnailSize = 'mq'
+const thumbnailWidth = 320
+const thumbnailHeight = 180
+
 export default class RecommendationsView {
-  /** @param {HTMLElement} section */
-  constructor (section) {
+  /**
+   * @param {HTMLElement} section
+   * @param {Object} cardProps
+   * @param {string} [cardProps.tagName=aside]
+   * @param {string} [cardProps.className]
+   * @param {boolean} [cardProps.wrapInDiv=false]
+   */
+  constructor (section, { tagName, className, wrapInDiv }) {
+    this.tagName = tagName ?? 'aside'
+    this.className = className ?? ''
+    this.wrapInDiv = wrapInDiv ?? false
+
     this.section = section
     /** @type {HTMLElement[]} */
     this.recommendations = []
@@ -14,10 +28,6 @@ export default class RecommendationsView {
 
   /** @param {string[]} recommendations */
   changeRecommendations (recommendations) {
-    function makeContainer () {
-      const aside = window.document.createElement('aside')
-      return aside
-    }
 
     function makeThumbnailAnchor (strIdent) {
       /** @type {HTMLAnchorElement} */
@@ -25,21 +35,6 @@ export default class RecommendationsView {
       a.href = 'https://youtu.be/' + strIdent
       a.target = '_blank'
       return a
-    }
-
-    /**
-     * @param {string} strIdent
-     * @param {boolean} [lazyLoading]
-     */
-    function makeThumbnail (strIdent, lazyLoading) {
-      lazyLoading = (lazyLoading === true)
-
-      /** @type {HTMLImageElement} */
-      const img = new Image()
-      img.alt = 'thumbnail for Youtube video with id =' + String(strIdent)
-      img.src = YT.toThumbnailUrl(strIdent)
-      img.loading = lazyLoading ? 'lazy' : 'eager'
-      return img
     }
 
     function makeTitleParagraphInParallel (strIdent) {
@@ -63,17 +58,58 @@ export default class RecommendationsView {
     for (let i = 0; i < Math.min(recommendationsCap, recommendations.length); i++) {
       const strIdent = recommendations[i]
 
-      const container =
-        makeContainer()
+      const { wrapper, itemContainer } = makeCard(this.tagName, this.className, this.wrapInDiv)
       const a = makeThumbnailAnchor(strIdent)
       const img = makeThumbnail(strIdent, i >= eagerCount)
 
       a.appendChild(img)
-      container.appendChild(a)
-      container.appendChild(makeTitleParagraphInParallel(strIdent))
+      itemContainer.appendChild(a)
+      itemContainer.appendChild(makeTitleParagraphInParallel(strIdent))
 
-      this.section.appendChild(container)
-      this.recommendations.push(container)
+      this.section.appendChild(wrapper)
+      this.recommendations.push(wrapper)
     }
   }
+}
+
+/**
+ * @param {string} tagName
+ * @param {string} className
+ * @param {boolean} wrapInDiv
+ */
+function makeCard (tagName, className, wrapInDiv) {
+  const el = window.document.createElement(tagName)
+  el.className = className
+
+  if (wrapInDiv) {
+    const div = window.document.createElement('div')
+    div.appendChild(el)
+    return {
+      wrapper: div,
+      itemContainer: el
+    }
+  }
+
+  return {
+    wrapper: el,
+    itemContainer: el
+  }
+}
+
+/**
+ * @param {string} strIdent
+ * @param {boolean} [lazyLoading]
+ */
+function makeThumbnail (strIdent, lazyLoading) {
+  lazyLoading = (lazyLoading === true)
+
+  /** @type {HTMLImageElement} */
+  const img = new Image()
+  img.alt = 'thumbnail for Youtube video with id =' + String(strIdent)
+  img.src = YT.toThumbnailUrl(strIdent, thumbnailSize)
+  img.width = thumbnailWidth
+  img.height = thumbnailHeight
+
+  img.loading = lazyLoading ? 'lazy' : 'eager'
+  return img
 }

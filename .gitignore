@@ -5,6 +5,12 @@ common/authTokens.js
 # Build output.
 _node/bundle.js
 
+# Folders for local experiments.
+/*local/
+/*t?mp/
+/*experiment?/
+/*ignore?/
+
 ## ==== NODE.js ====
 # Source: https://github.com/github/gitignore/blob/main/Node.gitignore
 # Logs

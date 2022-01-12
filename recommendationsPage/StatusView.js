@@ -1,5 +1,6 @@
 /** @enum {number} */
 export const StatusType = {
+  LoadingLong: -2,
   Loading: -1,
   OK: 0,
   NoUser: 1,
@@ -9,13 +10,14 @@ export const StatusType = {
 Object.freeze(StatusType)
 
 export class StatusView {
-  constructor (loading, noUser, emptyHistory, otherError, otherErrorContent) {
+  constructor ({ loading, loadingLong, noUser, emptyHistory, otherError, otherErrorContent }) {
     /** @type {HTMLElement} */
     this.otherErrorContent = otherErrorContent
 
     /** @type {Map<StatusType, HTMLElement>} */
     this.map = new Map()
     this.map.set(StatusType.Loading, loading)
+    this.map.set(StatusType.LoadingLong, loadingLong)
     this.map.set(StatusType.OK, null)
     this.map.set(StatusType.NoUser, noUser)
     this.map.set(StatusType.EmptyHistory, emptyHistory)

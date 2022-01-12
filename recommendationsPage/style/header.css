@@ -1,0 +1,32 @@
+body > header[data-theme="light"]:first-of-type {
+  background-color: var(--background-color);
+}
+
+body > header:first-of-type img:first-of-type {
+  height: 100px;
+}
+
+body > header:first-of-type {
+  --block-spacing-vertical: 0;
+}
+
+body > header:first-of-type li {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+body > header:first-of-type a[role="button"].outline:not(:hover):not(:focus) {
+  --border-color: var(--background-color);
+}
+
+body > header:first-of-type button.outline:not(:hover):not(:focus) {
+  --border-color: var(--background-color);
+}
+
+body > header:first-of-type a[role="button"].outline {
+  margin: 0;
+}
+
+body > header:first-of-type nav ul:last-of-type > li {
+  padding: 0;
+}

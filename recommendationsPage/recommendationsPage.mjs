@@ -8,6 +8,11 @@ import { makeHistoryPostAsync } from "../common/user.js";
 
 const baseUrl = 'https://api.reee.uk/'
 
+const elementIds = {
+  refreshButton: 'refresh',
+  containerForResults: 'container',
+}
+
 /*
  * Opening "algorithm":
  * If cache exists, show cache, status is ok.
@@ -28,16 +33,24 @@ const baseUrl = 'https://api.reee.uk/'
  */
 let rb
 
-const statusView = new StatusView(
-  window.document.getElementById('loading'),
-  window.document.getElementById('noUser'),
-  window.document.getElementById('emptyHistory'),
-  window.document.getElementById('otherError'),
-  window.document.getElementById('otherErrorContent')
+const statusView = new StatusView({
+  loading: window.document.getElementById('loading'),
+  loadingLong: window.document.getElementById('loadingLong'),
+  noUser: window.document.getElementById('noUser'),
+  emptyHistory: window.document.getElementById('emptyHistory'),
+  otherError: window.document.getElementById('otherError'),
+  otherErrorContent: window.document.getElementById('otherErrorContent')
+})
+// @todo Consider making card's HTML closer to "idiomatic" pico.css cards.
+// (I.e. wrap img-link into header, leave paragraph as is, tweak styles as needed.)
+const recommendationsView = new RecommendationsView(
+  window.document.getElementById(elementIds.containerForResults), {
+    tagName: 'article',
+    wrapInDiv: false
+  }
 )
-const recommendationsView = new RecommendationsView(window.document.getElementById('container'))
 
-const refreshButton = /** @type {HTMLButtonElement} */ (window.document.getElementById('refresh'))
+const refreshButton = /** @type {HTMLButtonElement} */ (window.document.getElementById(elementIds.refreshButton))
 
 refreshButton.disabled = true
 const initPromise =
@@ -76,13 +89,16 @@ async function initAsync (statusView, recommendationsView) {
   rb = new RecommendationsBackend(baseUrl, token)
 
   // Show cache (if exists).
-  let recs = await rb.loadCachedRecommendationsAsync()
+  const recs = await rb.loadCachedRecommendationsAsync()
 
   // Otherwise, show random.
   if (!recs || recs.length < 1) {
-    recs = await rb.fetchRandomPopularAsync()
-    capCount(recs, randomCap)
+    const pops = await rb.fetchRandomPopularAsync()
+    capCount(pops, randomCap)
+
+    recommendationsView.changeRecommendations(pops)
     statusView.showStatus(StatusType.NoUser)
+    return
   }
 
   recommendationsView.changeRecommendations(recs)
@@ -99,7 +115,8 @@ async function refreshAsync (statusView, recommendationsView) {
 
   // Privacy dialogs.
   if (!await ensureConsentIsAskedAsync()) return
-  statusView.showStatus(StatusType.Loading)
+
+  statusView.showStatus(StatusType.LoadingLong)
 
   // Upload history
   const data = await makeHistoryPostAsync()

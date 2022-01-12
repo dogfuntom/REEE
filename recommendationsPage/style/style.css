@@ -1,0 +1,15 @@
+body > .container-fluid {
+  --spacing: 0.5rem;
+  padding-left: 20px;
+  padding-right: 27px;
+}
+
+body > main > section:first-of-type {
+  --spacing: 0
+}
+
+/* Preserve aspect ratio of all images by default.
+Source: Defensive CSS */
+img {
+  object-fit: cover;
+}
