@@ -1,5 +1,5 @@
 // @ts-check
-import YT from './YT.mjs'
+import { getSnippet, toThumbnailUrl } from './YT.mjs'
 
 const recommendationsCap = 1000
 const eagerCount = 1
@@ -29,24 +29,17 @@ export default class RecommendationsView {
   /** @param {string[]} recommendations */
   changeRecommendations (recommendations) {
 
+    /**
+     * @param {string} strIdent
+     */
     function makeThumbnailAnchor (strIdent) {
       /** @type {HTMLAnchorElement} */
       const a = window.document.createElement('a')
       a.href = 'https://youtu.be/' + strIdent
       a.target = '_blank'
+      a.referrerPolicy = 'no-referrer'
+      a.rel = 'nofollow noopener norefferer'
       return a
-    }
-
-    function makeTitleParagraphInParallel (strIdent) {
-      const p = window.document.createElement('p')
-      p.textContent = ' '
-
-      // Fire and forget, we don't care about waiting for it.
-      YT.getTitle(strIdent)
-        .then(t => p.textContent = t ?? 'n/a')
-        .catch(console.error)
-
-      return p
     }
 
     for (const elem of this.recommendations) {
@@ -64,7 +57,7 @@ export default class RecommendationsView {
 
       a.appendChild(img)
       itemContainer.appendChild(a)
-      itemContainer.appendChild(makeTitleParagraphInParallel(strIdent))
+      itemContainer.appendChild(addTextualDataInParallel(strIdent, img))
 
       this.section.appendChild(wrapper)
       this.recommendations.push(wrapper)
@@ -105,11 +98,43 @@ function makeThumbnail (strIdent, lazyLoading) {
 
   /** @type {HTMLImageElement} */
   const img = new Image()
-  img.alt = 'thumbnail for Youtube video with id =' + String(strIdent)
-  img.src = YT.toThumbnailUrl(strIdent, thumbnailSize)
+  img.src = toThumbnailUrl(strIdent, thumbnailSize)
   img.width = thumbnailWidth
   img.height = thumbnailHeight
+  img.referrerPolicy = 'no-referrer'
+  img.alt = 'thumbnail of video'
 
   img.loading = lazyLoading ? 'lazy' : 'eager'
   return img
+}
+
+/**
+ * @param {string} strIdent
+ * @param {HTMLImageElement} img
+ */
+function addTextualDataInParallel (strIdent, img) {
+  const p = window.document.createElement('p')
+  // p.textContent = ' '
+
+  // Fire and forget, we don't care about waiting for it.
+  getSnippet(strIdent)
+    .then(s => {
+      // p.textContent = s.title;
+      p.appendChild(document.createTextNode(s.title))
+      p.appendChild(document.createTextNode(' <'))
+
+      const channelTitle = document.createElement('strong')
+      channelTitle.appendChild(document.createTextNode(s.channelTitle))
+      p.appendChild(channelTitle)
+
+      p.appendChild(document.createTextNode(', '))
+      p.appendChild(document.createTextNode(s.publishedAt.substring(0, 4)))
+
+      p.appendChild(document.createTextNode('>'))
+
+      // img.alt = s.description
+    })
+    .catch(console.error)
+
+  return p
 }
