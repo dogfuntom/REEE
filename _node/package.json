@@ -1,6 +1,6 @@
 {
   "name": "reee",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "the compiled part of REEE's code (the rest of code is published and executed as is)",
   "main": "main.mjs",
   "scripts": {
