@@ -11,16 +11,16 @@
       },
       "command": "browserify main.ts -p [ tsify --noImplicitAny ] > bundle.js"
     }, {
-      "label": "browserify (use this)",
+      "label": "browserify with esmify",
       "type": "shell",
       "group": {
         "kind": "build",
         "isDefault": true
       },
       "options": {
-        "cwd": "./_node"
+        "cwd": "./MetaMask"
       },
-      "command": "browserify main.mjs -p esmify --debug > bundle.js"
+      "command": "npx browserify main.mjs -p esmify --debug -o bundle.js"
     }
   ]
 }

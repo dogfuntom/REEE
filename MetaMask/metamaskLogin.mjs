@@ -1,7 +1,7 @@
 import Backend from './Backend.mjs'
 import { MetaMaskFacade, binanceMainnetChainId as chainId } from './metamask.mjs'
 import { getUserIdentAsync } from '../common/user.js'
-import browser from 'webextension-polyfill'
+import browser from '../common/browser-polyfill.js'
 
 // @remind Backend URL. Don't forget to run build when changing this.
 const backendUrl = 'https://reee-blockchain-k9uqc.ondigitalocean.app/'

@@ -41,7 +41,6 @@ export function toThumbnailUrl (strIdent, size) {
  * @property {string} channelTitle
  * @property {string} categoryId
  * @property {string} liveBroadcastContent live|none|upcoming
- * @property {Array<string>} [tags] @todo not sure if available
  */
 
 /**

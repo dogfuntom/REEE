@@ -3,7 +3,7 @@ common/authTokens.mjs
 common/authTokens.js
 
 # Build output.
-_node/bundle.js
+bundle.js
 
 # Folders for local experiments.
 /*local/

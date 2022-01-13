@@ -8,7 +8,7 @@ REcommendation Engine Extension
 - ~~[Bonsai.css](https://github.com/bonsaicss/bonsai.css/blob/v1.2.2/dist/bonsai.css) (Technically, not a library, but still listed here just in case.)~~
 - ~~[Picnic CSS](https://github.com/franciscop/picnic/blob/v6.5.5/picnic.css) (Technically, not a library, but still listed here just in case.)~~
 - [Pico.css](https://github.com/picocss/pico/blob/v1.4.3/css/pico.css) (Technically, not a library, but still listed here just in case.)
-- The tree of dependencies that entails from [package.json](_node/package.json).
+- The tree of dependencies that entails from [package.json](MetaMask/package.json).
 
 ## Development
 

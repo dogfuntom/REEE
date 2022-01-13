@@ -10,11 +10,11 @@
   "license": "UNLICENSED",
   "private": "true",
   "dependencies": {
-    "@metamask/providers": "^8.1.1",
-    "webextension-polyfill": "^0.8.0"
+    "@metamask/providers": "^8.1.1"
   },
   "devDependencies": {
     "browser-resolve": "^2.0.0",
+    "browserify": "^17.0.0",
     "esmify": "^2.1.1"
   },
   "overrides": {
