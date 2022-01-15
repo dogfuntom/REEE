@@ -1,6 +1,11 @@
-# Public auth tokens. Not a big secret, but just in case.
+# Public auth tokens. Not a secret (nothing inside on front-end side can be secret), but just in case.
 common/authTokens.mjs
 common/authTokens.js
+
+# Youtube API v3 key.
+# Not a secret (because there's no secrets on front-end),
+# but Github still sends a warning email on each commit containing it.
+recommendationsPage/G.mjs
 
 # Build output.
 bundle.js
