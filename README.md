@@ -5,10 +5,21 @@ REcommendation Engine Extension
 ## 3rd-party libraries
 
 - [MVP.css](https://github.com/andybrewer/mvp/blob/v1.8/mvp.css) (Technically, not a library, but still listed here just in case.)
-- ~~[Bonsai.css](https://github.com/bonsaicss/bonsai.css/blob/v1.2.2/dist/bonsai.css) (Technically, not a library, but still listed here just in case.)~~
-- ~~[Picnic CSS](https://github.com/franciscop/picnic/blob/v6.5.5/picnic.css) (Technically, not a library, but still listed here just in case.)~~
 - [Pico.css](https://github.com/picocss/pico/blob/v1.4.3/css/pico.css) (Technically, not a library, but still listed here just in case.)
 - The tree of dependencies that entails from [package.json](MetaMask/package.json).
+
+## Branches
+
+The main branch is Chrome branch.
+(In the past, it was the opposite, Firefox version was the main branch.)
+
+How to make Firefox branch or Firefox release:
+
+- Remove Metamask code and UI.
+- Remove webextension-polyfill (itself and from manifest).
+
+NOTE: Chrome warns that it doesn't understand `browser_specific_setting` in manifest.json.
+It's harmless, ignore it. (This the only con of having main branch = Chrome branch, instead of making a separate Chrome branch.)
 
 ## Development
 

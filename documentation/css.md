@@ -15,7 +15,7 @@ A perfect CSS framework for the current stage of REEE development would be like 
 Existence of such example shows that authors specifically aimed for compatibility with such a use case.
 (However, anyway, usually it's not hard to override/extend the framework and do it without explicit support.)
 
-Currently trying
+Currently using
 ---
 
 - Pico.css: has everything from the list above.
@@ -25,13 +25,13 @@ Currently trying
     And Flexbox is not a good fit for our case (not sure about Bootstrap).
     However, it's not a big deal because CSS Grid Layout is easy enough to use and fit to our needs directly (without any frameworks).
 
-Maybe
+Almost a perfect fit
 ---
 
 - Picnic CSS: seems to fit all the requirements listed above.
   - Top menu is implemented with outdated hacks. This decreases maintainability for no good reason.
 
-Not ideal
+Not much of a perfect fit
 ---
 
 - BareCSS: top menu is hacky and not semantic; full-width is fake (only background is full-width).
