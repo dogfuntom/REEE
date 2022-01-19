@@ -7,9 +7,9 @@ import YoutubeApiV3Key from "./G.mjs"
 
 /**
  * @param {string} strIdent
- * @returns {Promise<Snippet>}
+ * @returns {Promise<Snippet | null>}
  */
-export async function getSnippet (strIdent) {
+export async function tryGetSnippet (strIdent) {
   // Note that API key is not a secret, so it's fine to have it in code.
   // (It's public anyway because extensions are incredibly easy to "disassembly".
   // Instead, key usage can be secured on the key management side at the Google dashboard.)
@@ -20,11 +20,6 @@ export async function getSnippet (strIdent) {
 
   /** @type {SnippetResponse} */
   const json = await response.json()
-
-  if (!json.items) {
-    console.error(json)
-  }
-
   return json.items[0]?.snippet
 }
 

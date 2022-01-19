@@ -1,5 +1,5 @@
 // @ts-check
-import { getSnippet, toThumbnailUrl } from './YT.mjs'
+import { tryGetSnippet, toThumbnailUrl } from './YT.mjs'
 
 const recommendationsCap = 1000
 const eagerCount = 1
@@ -117,9 +117,13 @@ function addTextualDataInParallel (strIdent, img) {
   // p.textContent = ' '
 
   // Fire and forget, we don't care about waiting for it.
-  getSnippet(strIdent)
+  tryGetSnippet(strIdent)
     .then(s => {
-      // p.textContent = s.title;
+      if (!s) {
+        p.appendChild(document.createTextNode('< n/a >'))
+        return
+      }
+
       p.appendChild(document.createTextNode(s.title))
       p.appendChild(document.createTextNode(' <'))
 
