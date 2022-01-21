@@ -1,35 +1,13 @@
 import connectToAnyAsync from "./connect.mjs"
 import MetaMaskFacade from "./metamask.mjs"
 import { MetaMaskProvider } from "./provider.mjs"
-
-const binanceMainnetChainId = 56
-const chainId = binanceMainnetChainId
-
-const ids = {
-  "CHROME_ID": "nkbihfbeogaeaoehlefnkodbefgpgknn",
-  "FIREFOX_ID": "webextension@metamask.io"
-}
+import { binanceMainnetChainId as chainId, metaMaskIds as ids, binanceMainnetRpcUrls as rpcUrls } from "./constants.mjs"
 
 const providerPromise = createProvider()
 
 const button = document.getElementById('binance')
 if (button instanceof HTMLButtonElement) {
   button.onclick = async () => {
-    const rpcUrls = [
-      "https://bsc-dataseed1.binance.org",
-      "https://bsc-dataseed2.binance.org",
-      "https://bsc-dataseed3.binance.org",
-      "https://bsc-dataseed4.binance.org",
-      "https://bsc-dataseed1.defibit.io",
-      "https://bsc-dataseed2.defibit.io",
-      "https://bsc-dataseed3.defibit.io",
-      "https://bsc-dataseed4.defibit.io",
-      "https://bsc-dataseed1.ninicoin.io",
-      "https://bsc-dataseed2.ninicoin.io",
-      "https://bsc-dataseed3.ninicoin.io",
-      "https://bsc-dataseed4.ninicoin.io",
-      "wss://bsc-ws-node.nariox.org"
-    ]
     await addNetworkAsync(await providerPromise, { chainId, chainName: 'Binance Smart Chain Mainnet', currencySymbol: 'BNB', rpcUrls, blockExplorerUrl: 'https://bscscan.com' })
   }
 }
