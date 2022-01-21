@@ -11,6 +11,8 @@ recommendationsPage/G.mjs
 bundle.js
 
 # Folders for local experiments.
+# (On one hand, this should be done with .git/info/exclude instead.
+# On the other hand, there are rumors about .git/info/exclude disadvantages.)
 /*local/
 /*t?mp/
 /*experiment?/

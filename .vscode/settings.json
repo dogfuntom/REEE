@@ -4,7 +4,6 @@
         "Reee",
         "reinit"
     ],
-    "firefox.profile": "MetaMask_Test",
     "files.exclude": {
         "**/*.js": { "when": "$(basename).ts" },
         "**/**.js": { "when": "$(basename).tsx" },
