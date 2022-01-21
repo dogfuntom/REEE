@@ -1,5 +1,5 @@
 // @ts-check
-import { MetaMaskProvider } from "./provider.mjs"
+import { MetaMaskProvider } from "../metaMaskPage/provider.mjs"
 
 const ids = {
   "CHROME_ID": "nkbihfbeogaeaoehlefnkodbefgpgknn",
@@ -18,7 +18,6 @@ experimentC.onclick = () => onclickAsync(ids.CHROME_ID)
 async function onclickAsync (id) {
   const port = browser.runtime.connect(id)
 
-  // @todo Do we even have to call this?
   // const mGpsRequest = makeJsonRpcRequest('metamask_getProviderState', 1)
   // port.postMessage(mGpsRequest)
 
