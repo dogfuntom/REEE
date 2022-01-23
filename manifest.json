@@ -5,12 +5,12 @@
 	"description": "REcommendation Engine Extension",
 	"homepage_url": "http://reee.uk/",
 
-	"version": "1.0.5",
+	"version": "1.0.6",
 
 	"permissions": ["history", "storage"],
 
 	"icons": {
-		"34": "common/icon.png"
+		"34": "common/reee_logo.png"
 	},
 
 	"browser_specific_settings": {
@@ -23,7 +23,7 @@
 	"browser_action": {
 		"default_title": "REEE",
 		"default_icon": {
-			"34" : "common/icon.png"
+			"34" : "common/reee_logo.png"
 		}
 	},
 
