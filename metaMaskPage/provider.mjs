@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * @extends {Provider}
  */
@@ -15,51 +17,30 @@ export class MetaMaskProvider {
    * @throws {ProviderRpcError}
    */
   async request (args) {
-    const id = currentId++
+    try {
+      const id = currentId++
 
-    const req = makeJsonRpcRequestToMM(args.method, id, args.params)
-    this.port.postMessage(req)
+      const req = makeJsonRpcRequestToMM(args.method, id, args.params)
+      this.port.postMessage(req)
 
-    const jrr = await getJsonRpcResponseFromMM(this.port, id)
-    if ('error' in jrr) {
-      throw jrr.error
+      const jrr = await getJsonRpcResponseFromMM(this.port, id)
+      if ('error' in jrr) {
+        throw jrr.error
+      }
+
+      return jrr.result
+    } catch (err) {
+      if (ProviderRpcErrorImpl.isCompatible(err)) throw err
+      throw new ProviderRpcErrorImpl('Internal error.', 1011, err)
     }
-
-    return jrr.result
   }
 }
-
-// /**
-//  * @implements {ProviderRpcError}
-//  */
-// export class RpcError extends Error {
-//   /**
-//    * @param {string} message
-//    * @param {number} code
-//    * @param {unknown} [data]
-//    */
-//   constructor (message, code, data) {
-//     super(message)
-//     this.code = code
-//     this.data = data
-//   }
-// }
 
 // Ids.
 
 let currentId = 0;
 
 // Requests.
-
-/**
- * @param {JsonRpcNotification | JsonRpcRequest} jsonRpcRequest
- */
-function makeMetaMaskRequest (jsonRpcRequest) {
-  return {
-    data: jsonRpcRequest,
-    name: 'metamask-provider'
-  }
-}
 
 /**
  * @param {string} method
@@ -70,6 +51,7 @@ function makeMetaMaskRequest (jsonRpcRequest) {
 function makeJsonRpcRequestToMM (method, id, params) {
   if (!params) params = []
 
+  // A request object according to official JSON-RPC docs.
   const jsonRpcRequest = {
     jsonrpc: '2.0',
     method,
@@ -77,24 +59,11 @@ function makeJsonRpcRequestToMM (method, id, params) {
     id
   }
 
+  // Wrapper for sending through webextension Port,
+  // according to MetaMask's own implementation of extension provider (or rather, of base provider, that any provider inherits from).
+  // (Note that on GitHub it's hard to find where exactly MetaMask defines this format because the whole app is thinly spread across many small repos.
+  // To find where this format comes from, download the project and search in node_modules, or find a dApp website and use a debugger on it.)
   return { data: jsonRpcRequest, name: 'metamask-provider' }
-}
-
-/**
- * @param {string} method
- * @param {number | null} id
- * @param {object | Array} [params]
- * @returns {JsonRpcRequest}
- */
-function makeJsonRpcRequest (method, id, params) {
-  if (!params) params = []
-
-  return {
-    jsonrpc: '2.0',
-    method,
-    params,
-    id
-  }
 }
 
 // Responses.
@@ -119,13 +88,13 @@ async function getFirstMessageFromThat (port, predicate) {
   let onMessage, onDisco
 
   const promise = new Promise((resolve, reject) => {
-    onMessage = (/** @type {string} */ response) => {
+    onMessage = (/** @type {string | object} */ response) => {
       if (typeof response === 'string') response = JSON.parse(response)
       if (predicate(response)) resolve(response)
       // Otherwise, do nothing, continue waiting for it.
     }
 
-    onDisco = (/** @type {any} */ _p) => { reject (new Error('Unexpectedly disconnected.')) }
+    onDisco = (/** @type {unknown} */ p) => { reject (new ProviderRpcErrorImpl('Unexpectedly disconnected.', 1006, p)) }
   })
 
   port.onMessage.addListener(onMessage)
@@ -137,6 +106,39 @@ async function getFirstMessageFromThat (port, predicate) {
   })
 
   return promise
+}
+
+/**
+ * @implements {ProviderRpcError}
+ */
+class ProviderRpcErrorImpl extends Error {
+  /**
+   * @param {string} message
+   * @param {number} code
+   * @param {unknown} [data]
+   */
+  constructor (message, code, data) {
+    super (message)
+    this.code = code
+    this.data = data
+  }
+
+  /**
+   * @override
+   */
+  toString () {
+    return `
+${super.toString()}
+Code: ${this.code}
+Additional data: ${this.data ?? 'no additional data'}`
+  }
+
+  static isCompatible (error) {
+    if ('message' in error && 'code' in error) {
+      if (typeof error.message === 'string' && typeof error.code === 'number') return true
+    }
+    return false
+  }
 }
 
 /**

@@ -1,15 +1,73 @@
+// @ts-check
 import connectToAnyAsync from "./connect.mjs"
 import MetaMaskFacade from "./metamask.mjs"
 import { MetaMaskProvider } from "./provider.mjs"
 import { binanceMainnetChainId as chainId, metaMaskIds as ids, binanceMainnetRpcUrls as rpcUrls } from "./constants.mjs"
+import { getDidSignInAsync, signInAsync } from "./signIn.mjs"
+
+const buttonIds = {
+  addBinance: 'binance',
+  watchReee: 'token',
+  signIn: 'binanceSign'
+}
 
 const providerPromise = createProvider()
 
-const button = document.getElementById('binance')
-if (button instanceof HTMLButtonElement) {
+{
+  const button = /** @type {HTMLButtonElement} */ (document.getElementById(buttonIds.addBinance))
   button.onclick = async () => {
-    await addNetworkAsync(await providerPromise, { chainId, chainName: 'Binance Smart Chain Mainnet', currencySymbol: 'BNB', rpcUrls, blockExplorerUrl: 'https://bscscan.com' })
+    button.disabled = true
+    try {
+      await addNetworkAsync(await providerPromise, { chainId, chainName: 'Binance Smart Chain Mainnet', currencySymbol: 'BNB', rpcUrls, blockExplorerUrl: 'https://bscscan.com' })
+      button.textContent = 'done';
+    } catch (err) {
+      console.error(err)
+      button.textContent = err.toString()
+      button.disabled = false
+    }
   }
+}
+
+{
+  const button = /** @type {HTMLButtonElement} */ (document.getElementById(buttonIds.watchReee))
+  button.onclick = async () => {
+    button.disabled = true
+    try {
+      await watchReeeAssetAsync(await providerPromise)
+      button.textContent = 'done';
+    } catch (err) {
+      console.error(err)
+      button.textContent = err.toString()
+      button.disabled = false
+    }
+  }
+}
+
+{
+  const button = /** @type {HTMLButtonElement} */ (document.getElementById(buttonIds.signIn))
+  button.onclick = async () => {
+    button.disabled = true
+    try {
+      await signInAsync(await providerPromise, chainId, m => button.textContent = m)
+      button.textContent = 'done';
+    } catch (error) {
+      console.error(error)
+      button.textContent = error.toString()
+      button.disabled = false
+    }
+  }
+
+  button.disabled = true
+  Promise
+    .race([
+      new Promise((_, reject) => { setTimeout(reject, 1000, new Error('timeout')) }),
+      getDidSignInAsync()
+        .then(flag => {
+          if (flag) button.textContent = 'Re-' + button.textContent
+        })
+        .catch(console.error)
+    ])
+    .finally(() => button.disabled = false)
 }
 
 async function createProvider () {
@@ -35,7 +93,11 @@ async function addNetworkAsync (
   await mmf.addChainAsync({ chainId, chainName, currencyName: 'Binance Chain Native Token', currencySymbol, currencyDecimals: 18, rpcUrls, blockExplorerUrl })
 }
 
+async function watchReeeAssetAsync (provider) {
+  const mmf = new MetaMaskFacade(provider)
+  await mmf.watchAssetAsync('0x41664b1316fceac8578801bd6eb130ef0cfbec69', 'REEE', 18)
+}
+
 /**
- * @typedef {Object} Provider
- * @property {(args: RequestArguments) => Promise<unknown>} request
+ * @typedef {import("./provider.mjs").Provider} Provider
  */

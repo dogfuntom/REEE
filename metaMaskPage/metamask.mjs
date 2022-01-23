@@ -1,6 +1,10 @@
 // @ts-check
+import toMsgParams from "./ethSignTypedDataV4.mjs"
 
 export default class MetaMaskFacade {
+  /**
+   * @param {Provider} provider
+   */
   constructor (provider) {
     this.provider = provider
   }
@@ -40,7 +44,7 @@ export default class MetaMaskFacade {
   async addChainAsync({
     chainId, chainName, currencyName, currencySymbol, currencyDecimals, rpcUrls, blockExplorerUrl
   }) {
-    const toHex = (num) => {
+    const toHex = (/** @type {number} */ num) => {
       return '0x' + num.toString(16)
     }
 
@@ -81,9 +85,57 @@ export default class MetaMaskFacade {
       }
     }
   }
+
+  /**
+   * @param {string} address
+   * @param {string} symbol
+   * @param {number} decimals
+   */
+  async watchAssetAsync(address, symbol, decimals) {
+    const success = await this.provider.request({
+      method: 'wallet_watchAsset',
+      params: {
+        type: 'ERC20',
+        options: {
+          address,
+          symbol,
+          decimals,
+        },
+      },
+    })
+
+    console.debug(success)
+    if (!success) {
+      console.debug(success)
+      const error = new Error('Has been already added or something else went wrong.')
+      if ('captureStackFrame' in Error) {
+        Error.captureStackTrace(error)
+        console.debug(error.stack)
+      }
+      throw error
+    }
+  }
+
+  /**
+   * Signs a message.
+   * @param {string} userIdent our user ID
+   * @param {string} nonce our nonce
+   * @param {number | string} chainId
+   */
+  async signAsync(userIdent, nonce, chainId) {
+    const from = this.account
+    const provider = this.provider
+
+    const msgParams = toMsgParams(userIdent, nonce, String(chainId))
+
+    const params = [from, JSON.stringify(msgParams)];
+    const method = 'eth_signTypedData_v4';
+    const signature = await provider.request({ method, params })
+    return signature
+  }
+
 }
 
 /**
- * @typedef {Object} Provider
- * @property {(args: RequestArguments) => Promise<unknown>} request
+ * @typedef {import("./provider.mjs").Provider} Provider
  */
