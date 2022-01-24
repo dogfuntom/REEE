@@ -9,7 +9,11 @@
 export default async function connectToAnyAsync(ids) {
   if (ids.length < 2) console.warn('At least 2 items are recommended.')
 
-  let ports = ids.map(id => browser.runtime.connect(id))
+  // Chrome docs lie about runtime.connect().
+  // When id doesn't exists, it throws a TypeError, not only onDisconnect.
+  // But Firefox follows it literally: no exception, just onDisconnect fired.
+  let ports = ids.map(id => tryConnect(id)).filter(p => p)
+  if (ports.length === 1) return Promise.resolve(ports[0])
 
   return new Promise(resolve => {
     for (const port of ports) {
@@ -19,4 +23,13 @@ export default async function connectToAnyAsync(ids) {
       })
     }
   })
+}
+
+function tryConnect (id) {
+  try {
+    return browser.runtime.connect(id)
+  } catch (error) {
+    if (error instanceof TypeError) return null
+    throw error
+  }
 }
