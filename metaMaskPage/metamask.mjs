@@ -1,4 +1,5 @@
 // @ts-check
+import ErrorWithAttachment from "./ErrorWithAttachment.mjs"
 import toMsgParams from "./ethSignTypedDataV4.mjs"
 
 export default class MetaMaskFacade {
@@ -7,6 +8,7 @@ export default class MetaMaskFacade {
    */
   constructor (provider) {
     this.provider = provider
+    this.account = null
   }
 
   /**
@@ -17,18 +19,33 @@ export default class MetaMaskFacade {
    * (Cleaner usage for the price of imperceivable impact on performance.)
    */
   async initializeAsync() {
-    const eth = this.provider
+    // If we already have an account, then it's not the first time.
+    const reinit = this.account != null
 
-    const accounts = await eth.request({ method: 'eth_requestAccounts' })
-    const account = accounts[0]
+    let account = null
+    try {
+      const eth = this.provider
+      const accounts = await eth.request({ method: 'eth_requestAccounts' })
+      account = accounts[0]
+    } catch (err) {
+      if (reinit) throw err
 
-    if (account) {
-      console.log(`Detected MetaMask account ${account}`)
-    } else {
-      throw `There's no MetaMask account or there's no access to it`
+      if ('code' in err && err.code === 1006) {
+        throw new ErrorWithAttachment(
+          "Can't connect to MetaMask extensions. Is it installed and enabled?",
+          ('data' in err ? err.data : err))
+      }
+
+      throw err
     }
 
-    this.account = account
+    if (account) {
+      this.account = account
+      console.debug(`Detected MetaMask account ${account}`)
+    } else {
+      this.account = null
+      throw new Error(`There's no MetaMask account or there's no access to it.`)
+    }
   }
 
   /**

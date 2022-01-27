@@ -19,8 +19,8 @@ export default class ErrorWithAttachment extends Error {
   }
 
   toString() {
-    return `
-Error: ${this.message}
-More Info: ${JSON.stringify(this.attachment)}.`;
+    return (
+`Error: ${this.message}
+More Info: ${JSON.stringify(this.attachment)}.`)
   }
 }

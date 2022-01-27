@@ -9,6 +9,9 @@ export class MetaMaskProvider {
    */
   constructor (port) {
     this.port = port
+    this.disco = null
+
+    this.port.onDisconnect.addListener(p => this.disco = ('error' in p ? p.error.message : chrome.runtime.lastError))
   }
 
   /**
@@ -17,6 +20,8 @@ export class MetaMaskProvider {
    * @throws {ProviderRpcError}
    */
   async request (args) {
+    if (this.disco) throw new ProviderRpcErrorImpl("Cannot send request through the port because it's disconnected.", 1006, this.disco)
+
     try {
       const id = currentId++
 
@@ -94,7 +99,13 @@ async function getFirstMessageFromThat (port, predicate) {
       // Otherwise, do nothing, continue waiting for it.
     }
 
-    onDisco = (/** @type {unknown} */ p) => { reject (new ProviderRpcErrorImpl('Unexpectedly disconnected.', 1006, p)) }
+    onDisco = (/** @type {browser.runtime.Port & { error: Object? }} */ p) => {
+      if ('error' in p) {
+        reject(new ProviderRpcErrorImpl(p.error.message, 1006))
+      } else {
+        reject(new ProviderRpcErrorImpl(chrome.runtime.lastError, 1006))
+      }
+    }
   })
 
   port.onMessage.addListener(onMessage)
@@ -127,10 +138,10 @@ class ProviderRpcErrorImpl extends Error {
    * @override
    */
   toString () {
-    return `
-${super.toString()}
+    return (
+`${super.toString()}
 Code: ${this.code}
-Additional data: ${this.data ?? 'no additional data'}`
+Additional data: ${(this.data ? JSON.stringify(this.data) : 'no additional data')}`)
   }
 
   static isCompatible (error) {

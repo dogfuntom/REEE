@@ -22,7 +22,7 @@ const providerPromise = createProvider()
       button.textContent = 'done';
     } catch (err) {
       console.error(err)
-      button.textContent = err.toString()
+      setTextUsingBRs(button, err.toString())
       button.disabled = false
     }
   }
@@ -37,7 +37,7 @@ const providerPromise = createProvider()
       button.textContent = 'done';
     } catch (err) {
       console.error(err)
-      button.textContent = err.toString()
+      setTextUsingBRs(button, err.toString())
       button.disabled = false
     }
   }
@@ -50,9 +50,9 @@ const providerPromise = createProvider()
     try {
       await signInAsync(await providerPromise, chainId, m => button.textContent = m)
       button.textContent = 'done';
-    } catch (error) {
-      console.error(error)
-      button.textContent = error.toString()
+    } catch (err) {
+      console.error(err)
+      setTextUsingBRs(button, err.toString())
       button.disabled = false
     }
   }
@@ -96,6 +96,25 @@ async function addNetworkAsync (
 async function watchReeeAssetAsync (provider) {
   const mmf = new MetaMaskFacade(provider)
   await mmf.watchAssetAsync('0x41664b1316fceac8578801bd6eb130ef0cfbec69', 'REEE', 18)
+}
+
+/**
+ *
+ * @param {HTMLElement} htmlElement
+ * @param {string} text
+ */
+function setTextUsingBRs (htmlElement, text) {
+  for (const child of htmlElement.childNodes) {
+    child.remove()
+  }
+
+  const lines = text.replace('\r', '').split('\n')
+  htmlElement.appendChild(document.createTextNode(lines[0]))
+  for (let index = 1; index < lines.length; index++) {
+    const line = lines[index];
+    htmlElement.appendChild(document.createElement('br'))
+    htmlElement.appendChild(document.createTextNode(line))
+  }
 }
 
 /**
