@@ -1,5 +1,14 @@
 # REEE
 
+## Branch-specific notes
+
+This branch is intended to be used as a, so to speak, running last commit.
+Meaning, as long as possible, it should be just a single own commit.
+This single commit stores only changes needed to "convert" main codebase into Firefox-compatible codebase.
+To pull new changes from main to Firefox, use rebase or merge.
+
+---
+
 REcommendation Engine Extension
 
 ## 3rd-party libraries

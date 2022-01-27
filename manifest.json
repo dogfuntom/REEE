@@ -29,7 +29,6 @@
 
 	"background": {
     "scripts": [
-			"common/browser-polyfill.js",
 			"background.js"
 		]
   }
