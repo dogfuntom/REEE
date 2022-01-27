@@ -1,12 +1,17 @@
 The Log
 ===
 
-Contains uncategorized content.
+Contains non-categorized content.
 Most important content should be categorized properly eventually.
 The rest should be kept here, just in case.
 Most recent is at the top.
 
-Renamed all `.msj` files to `.js`
+Good news, `.mjs` files are treated the same as `.js` now
+---
+
+The problem described previously is no longer a problem.
+
+Renamed all `.mjs` files to `.js`
 ---
 
 It turns out `@ts-check` doesn't work with `.mjs` files

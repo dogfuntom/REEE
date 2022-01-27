@@ -13,23 +13,21 @@ REcommendation Engine Extension
 The main branch is Chrome branch.
 (In the past, it was the opposite, Firefox version was the main branch.)
 
-How to make Firefox branch or Firefox release:
+The difference required for publishing a Firefox release:
 
-- Remove Metamask code and UI.
-- Remove webextension-polyfill (itself and from manifest).
+- webextension-polyfill must be removed (itself and from manifest).
+  (Extensions that depend on early-access 3rd-parties will be rejected, and webextension-polyfill didn't reach 1.0 release yet.)
 
 NOTE: Chrome warns that it doesn't understand `browser_specific_setting` in manifest.json.
-It's harmless, ignore it. (This the only con of having main branch = Chrome branch, instead of making a separate Chrome branch.)
+It's harmless, ignore it. (This is the only con of having main branch == Chrome branch, instead of making a separate Chrome branch.)
 
 ## Development
 
 ### VS Code
 
 Overall this is a folder for opening in VS Code including recommended extensions.
-To build use VS Code task, or do it manually (see the task's definition or the "Other editors" section here).
 
 ### Other editors
 
 Most likely it's easy to use any other editor, even if it doesn't have similar recommended extensions.
-(Both recommended extensions are just minor conveniences atm.)
-To build do manually the same thing as described in <.vscode/tasks.json>.
+(The recommended extensions are just minor conveniences atm.)
