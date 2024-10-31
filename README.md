@@ -6,7 +6,6 @@ REcommendation Engine Extension
 
 - [MVP.css](https://github.com/andybrewer/mvp/blob/v1.8/mvp.css) (Technically, not a library, but still listed here just in case.)
 - [Pico.css](https://github.com/picocss/pico/blob/v1.4.3/css/pico.css) (Technically, not a library, but still listed here just in case.)
-- The tree of dependencies that entails from [package.json](MetaMask/package.json).
 
 ## Branches
 
